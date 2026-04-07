@@ -220,12 +220,14 @@ export function renderBeranda(el) {
           <div class="home-greeting">${greeting}</div>
           <div class="home-name">${esc(session.name || 'Karyawan')}</div>
         </div>
-        <div class="home-badges">
-          <div class="badge-savings">💰 Rp 2.5jt</div>
-          <div class="badge-preapproval">${preapprovalCount} Pra-disetujui ●●</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
           <button class="theme-toggle" id="theme-toggle-btn" title="Ganti tampilan">
             ${getTheme() === 'dark' ? '☀️' : '🌙'}
           </button>
+          <div class="home-badges">
+            <div class="badge-savings">💰 Rp 2.5jt</div>
+            <div class="badge-preapproval">${preapprovalCount} Pra-disetujui ●●</div>
+          </div>
         </div>
       </div>
 

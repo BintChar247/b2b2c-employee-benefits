@@ -3,7 +3,7 @@
  * Workflow: 03_offers_catalog
  */
 
-import { supabase, state, navigate, esc } from './app.js'
+import { supabase, state, navigate, esc, toggleTheme, getTheme } from './app.js'
 
 // ============================================================
 // Demo offers — used when Supabase is not configured
@@ -223,6 +223,9 @@ export function renderBeranda(el) {
         <div class="home-badges">
           <div class="badge-savings">💰 Rp 2.5jt</div>
           <div class="badge-preapproval">${preapprovalCount} Pra-disetujui ●●</div>
+          <button class="theme-toggle" id="theme-toggle-btn" title="Ganti tampilan">
+            ${getTheme() === 'dark' ? '☀️' : '🌙'}
+          </button>
         </div>
       </div>
 
@@ -325,6 +328,13 @@ function attachBerandaListeners(el) {
     const offerId = card.dataset.offerId
     const offer = state.offers.find(o => o.id === offerId)
     if (offer) navigate('detail', { offer })
+  })
+
+  // Theme toggle
+  el.querySelector('#theme-toggle-btn')?.addEventListener('click', () => {
+    toggleTheme()
+    const btn = el.querySelector('#theme-toggle-btn')
+    if (btn) btn.textContent = getTheme() === 'dark' ? '☀️' : '🌙'
   })
 
   // Lihat semua → go to Produk

@@ -20,6 +20,37 @@ export const supabase = (supabaseUrl && supabaseKey)
   : null
 
 // ============================================================
+// Theme management (light default)
+// ============================================================
+export function getTheme() {
+  return localStorage.getItem('theme') || 'light'
+}
+
+export function setTheme(theme) {
+  localStorage.setItem('theme', theme)
+  const app = document.getElementById('app')
+  if (!app) return
+  if (theme === 'dark') {
+    app.dataset.theme = 'dark'
+  } else {
+    delete app.dataset.theme
+  }
+}
+
+export function toggleTheme() {
+  const next = getTheme() === 'light' ? 'dark' : 'light'
+  setTheme(next)
+  // Re-render toggle buttons to flip icon
+  document.querySelectorAll('.theme-toggle').forEach(btn => {
+    btn.textContent = next === 'dark' ? '☀️' : '🌙'
+  })
+}
+
+function themeIcon() {
+  return getTheme() === 'dark' ? '☀️' : '🌙'
+}
+
+// ============================================================
 // Application State
 // ============================================================
 export const state = {
@@ -265,6 +296,12 @@ function renderProfil(el) {
           <span class="profil-row-label">Provider</span>
           <span class="profil-row-value">Adira · Home Credit · Zurich</span>
         </div>
+        <div class="profil-row" style="cursor:pointer;" id="profil-theme-row">
+          <span class="profil-row-label">Tampilan</span>
+          <span class="profil-row-value" id="profil-theme-label">
+            ${getTheme() === 'dark' ? '🌙 Gelap' : '☀️ Terang'}
+          </span>
+        </div>
       </div>
 
       <button class="btn-keluar" id="btn-keluar">Keluar</button>
@@ -276,6 +313,12 @@ function renderProfil(el) {
   `
 
   el.querySelector('#btn-keluar')?.addEventListener('click', logout)
+
+  el.querySelector('#profil-theme-row')?.addEventListener('click', () => {
+    toggleTheme()
+    const label = el.querySelector('#profil-theme-label')
+    if (label) label.textContent = getTheme() === 'dark' ? '🌙 Gelap' : '☀️ Terang'
+  })
 }
 
 // ============================================================
@@ -317,6 +360,9 @@ export function esc(str) {
 async function boot() {
   // Remove splash
   document.getElementById('loading-splash')?.remove()
+
+  // Apply saved theme (light is default)
+  setTheme(getTheme())
 
   // Check for existing session
   try {

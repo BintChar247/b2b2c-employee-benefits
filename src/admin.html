@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,15 +7,30 @@
   <link rel="stylesheet" href="./admin.css" />
 </head>
 <body>
+
+  <!-- App root — admin.js populates this -->
   <div id="admin-app">
     <div class="admin-loading">
       <div class="admin-spinner"></div>
-      <span>Memuat...</span>
+      <span>Memuat…</span>
     </div>
   </div>
-  <div id="toast-container"></div>
-  <div id="modal-container"></div>
-  <div class="panel-overlay" id="panel-overlay"></div>
+
+  <!-- Toast stack — always available -->
+  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Modal container — confirm() appends overlays here -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div id="modal-box" class="modal-box" role="dialog" aria-modal="true">
+      <h3 id="modal-title" class="modal-title"></h3>
+      <p  id="modal-body"  class="modal-body"></p>
+      <div id="modal-actions" class="modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- Panel overlay backdrop — used by openPanel() -->
+  <div id="panel-overlay" class="panel-overlay hidden"></div>
+
   <script type="module" src="./admin.js"></script>
 </body>
 </html>

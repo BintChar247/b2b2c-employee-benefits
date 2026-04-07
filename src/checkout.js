@@ -126,18 +126,15 @@ export function renderDetail(el, offer) {
         <div class="autofill-sub">Nama, gaji, rekening dari payroll</div>
       </div>
 
-      <!-- CTA -->
+      <!-- CTA — native <a> so mobile browsers never block it -->
       <div class="detail-cta-section">
-        <button class="btn-ajukan-main" id="btn-ajukan">
+        <a class="btn-ajukan-main" id="btn-ajukan"
+           href="${esc(buildRedirectUrl(offer))}"
+           target="_blank"
+           rel="noopener noreferrer">
           <span class="btn-ajukan-label">Ajukan Sekarang →</span>
           <span class="btn-ajukan-sub">Disetujui dalam 5 menit</span>
-        </button>
-
-        <div class="popup-fallback hidden" id="popup-fallback">
-          <a href="#" id="popup-fallback-link" target="_blank" rel="noopener noreferrer">
-            Ketuk di sini untuk membuka ${esc(provider.name || 'provider')} →
-          </a>
-        </div>
+        </a>
 
         <button class="btn-simulasi" id="btn-simulasi">
           Simulasi cicilan lain →
@@ -163,25 +160,9 @@ function attachDetailListeners(el, offer) {
   // Back
   el.querySelector('#detail-back')?.addEventListener('click', goBack)
 
-  // Ajukan — MUST be synchronous (iOS Safari popup rules)
+  // Log analytics when the native <a> is tapped (non-blocking)
   el.querySelector('#btn-ajukan')?.addEventListener('click', () => {
-    const redirectUrl = buildRedirectUrl(offer)
-
-    // Fire-and-forget analytics — no await
     logRedirectEvent(offer)
-
-    // Synchronous open — must not follow an await
-    const win = window.open(redirectUrl, '_blank', 'noopener,noreferrer')
-
-    // Fallback if popup was blocked
-    if (!win || win.closed || typeof win.closed === 'undefined') {
-      const fallback = el.querySelector('#popup-fallback')
-      const link     = el.querySelector('#popup-fallback-link')
-      if (fallback && link) {
-        link.href = redirectUrl
-        fallback.classList.remove('hidden')
-      }
-    }
   })
 
   // Simulator

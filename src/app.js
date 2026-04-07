@@ -77,11 +77,30 @@ export function navigate(screen, opts = {}) {
   if (opts.tab)   state.activeTab = opts.tab
   if (opts.offer) state.selectedOffer = opts.offer
 
+  // Push a history entry so the phone's back gesture works
+  if (screen !== 'login') {
+    history.pushState({ screen, tab: state.activeTab }, '')
+  }
+
   render()
 }
 
 export function goBack() {
-  navigate(state.prevScreen)
+  // Use browser history if available, else fall back to prevScreen
+  if (history.length > 1) {
+    history.back()
+  } else {
+    navigateTo(state.prevScreen)
+  }
+}
+
+// Internal navigate without pushing history (used by popstate handler)
+function navigateTo(screen, opts = {}) {
+  state.prevScreen = state.screen
+  state.screen = screen
+  if (opts.tab)   state.activeTab = opts.tab
+  if (opts.offer) state.selectedOffer = opts.offer
+  render()
 }
 
 // ============================================================
@@ -385,5 +404,19 @@ async function boot() {
     loadOffers()
   }
 }
+
+// Handle phone back gesture / browser back button
+window.addEventListener('popstate', (e) => {
+  const s = e.state?.screen
+  if (!s || s === 'login') {
+    navigateTo('main')
+  } else if (s === 'detail' && state.selectedOffer) {
+    navigateTo('detail')
+  } else if (s === 'simulator') {
+    navigateTo('simulator')
+  } else {
+    navigateTo('main', { tab: e.state?.tab || state.activeTab })
+  }
+})
 
 boot()

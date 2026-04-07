@@ -123,7 +123,7 @@ export function renderSimulator(el, offer) {
           <div class="sim-helper">Min ${formatIDRAbbr(c.minPrice)} — Maks ${formatIDRAbbr(c.maxPrice)}</div>
         </div>
 
-        <!-- Uang Muka slider -->
+        <!-- Uang Muka slider + IDR input -->
         <div class="sim-field">
           <div class="sim-label-row">
             <label class="sim-label">Uang Muka</label>
@@ -135,14 +135,26 @@ export function renderSimulator(el, offer) {
             id="sim-dp"
             min="${c.minDP}"
             max="${c.maxDP}"
-            step="5"
+            step="1"
             value="${sim.dpPct}"
           />
           <div class="sim-slider-labels">
             <span>${c.minDP}%</span>
             <span>${c.maxDP}%</span>
           </div>
-          <div class="sim-helper">Jumlah: ${formatIDRFull(Math.round(dpAmount))}</div>
+          <div class="sim-dp-idr-row">
+            <label class="sim-label" style="margin:0;white-space:nowrap;">Jumlah DP (Rp)</label>
+            <input
+              type="number"
+              class="sim-input sim-dp-idr"
+              id="sim-dp-idr"
+              value="${Math.round(dpAmount)}"
+              min="0"
+              inputmode="numeric"
+              placeholder="0"
+              style="width:100%;"
+            />
+          </div>
         </div>
 
         <!-- Tenor chips -->
@@ -282,10 +294,24 @@ function attachSimListeners(el, offer, c) {
     }
   })
 
-  // DP slider
+  // DP slider → update % badge + IDR input
   el.querySelector('#sim-dp')?.addEventListener('input', e => {
     sim.dpPct = parseInt(e.target.value)
     el.querySelector('#dp-badge').textContent = `${sim.dpPct}%`
+    const idrInput = el.querySelector('#sim-dp-idr')
+    if (idrInput) idrInput.value = Math.round(sim.price * sim.dpPct / 100)
+    recalc(el, offer, c)
+  })
+
+  // DP IDR input → update slider + % badge
+  el.querySelector('#sim-dp-idr')?.addEventListener('input', e => {
+    const idr = parseFloat(e.target.value)
+    if (isNaN(idr) || sim.price <= 0) return
+    sim.dpPct = Math.min(c.maxDP, Math.max(c.minDP, Math.round(idr / sim.price * 100)))
+    const slider = el.querySelector('#sim-dp')
+    const badge  = el.querySelector('#dp-badge')
+    if (slider) slider.value = sim.dpPct
+    if (badge)  badge.textContent = `${sim.dpPct}%`
     recalc(el, offer, c)
   })
 
@@ -350,9 +376,11 @@ function recalc(el, offer, c) {
   if (rows[2]) rows[2].querySelector('span:last-child').textContent = formatIDRFull(Math.round(total))
   if (rows[3]) rows[3].querySelector('span:last-child').textContent = formatIDRFull(Math.round(totalInt))
 
-  // Helper text below DP slider
-  const helper = el.querySelector('#sim-dp')?.parentElement?.querySelector('.sim-helper')
-  if (helper) helper.textContent = `Jumlah: ${formatIDRFull(Math.round(dpAmount))}`
+  // Sync IDR input when price changes (keep it accurate)
+  const idrInput = el.querySelector('#sim-dp-idr')
+  if (idrInput && document.activeElement !== idrInput) {
+    idrInput.value = Math.round(dpAmount)
+  }
 
   // Refresh amort table if visible
   const amortWrap = el.querySelector('#sim-amort')

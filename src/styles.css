@@ -1259,16 +1259,50 @@ input[type="range"]::-webkit-slider-thumb {
   color: var(--muted);
 }
 
-.sim-dp-idr-row {
+.sim-dp-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 8px;
 }
 
-.sim-dp-idr {
-  font-size: 13px;
-  padding: 8px 10px;
+.sim-dp-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sim-dp-sublabel {
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sim-dp-pct-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sim-dp-pct-wrap .sim-input {
+  padding-right: 24px;
+}
+
+.sim-dp-unit {
+  position: absolute;
+  right: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.sim-dp-sep {
+  color: var(--muted);
+  font-size: 14px;
+  padding-top: 14px;
+  flex-shrink: 0;
 }
 
 .chip-tenor {

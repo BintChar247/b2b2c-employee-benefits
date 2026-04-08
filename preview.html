@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B2B2C Portal — Mobile Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      padding: 40px 20px;
+      gap: 24px;
+    }
+
+    .preview-label {
+      color: #555;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    /* iPhone 15 Pro frame */
+    .phone-frame {
+      position: relative;
+      width: 393px;
+      height: 852px;
+      background: #1a1a1a;
+      border-radius: 54px;
+      box-shadow:
+        0 0 0 1px #3a3a3a,
+        0 0 0 3px #111,
+        0 0 0 4px #4a4a4a,
+        0 40px 80px rgba(0,0,0,0.8),
+        0 20px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* Side buttons */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 120px;
+      width: 4px;
+      height: 36px;
+      background: #3a3a3a;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 52px 0 #3a3a3a, 0 96px 0 #3a3a3a;
+    }
+
+    .phone-frame::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 160px;
+      width: 4px;
+      height: 80px;
+      background: #3a3a3a;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Dynamic Island */
+    .dynamic-island {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 126px;
+      height: 36px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 10;
+    }
+
+    /* Screen */
+    .phone-screen {
+      position: absolute;
+      inset: 0;
+      border-radius: 54px;
+      overflow: hidden;
+      background: #111;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Info strip */
+    .info-strip {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .info-item {
+      text-align: center;
+    }
+
+    .info-value {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .info-key {
+      color: #555;
+      font-size: 10px;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    .dot { color: #333; font-size: 20px; }
+
+    .test-codes {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 393px;
+    }
+
+    .test-codes-title {
+      color: #555;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .code-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .code {
+      color: #E60012;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .code-name {
+      color: #888;
+      font-size: 11px;
+    }
+
+    .badge-active {
+      background: rgba(52,199,89,0.15);
+      color: #34C759;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-label">B2B2C Employee Benefits Portal — Live Preview</div>
+
+  <div class="phone-frame">
+    <div class="dynamic-island"></div>
+    <div class="phone-screen">
+      <iframe
+        src="http://localhost:5173/b2b2c-employee-benefits/"
+        title="B2B2C Benefits Portal"
+        allow="fullscreen"
+      ></iframe>
+    </div>
+  </div>
+
+  <div class="test-codes">
+    <div class="test-codes-title">Test Employee Codes</div>
+    <div class="code-row">
+      <span class="code">EMP-001001</span>
+      <span class="code-name">Demo Employee 1 · PT Mitra Sejahtera</span>
+      <span class="badge-active">✓ Aktif</span>
+    </div>
+    <div class="code-row">
+      <span class="code">EMP-001002</span>
+      <span class="code-name">Demo Employee 2 · PT Mitra Sejahtera</span>
+      <span class="badge-active">✓ Aktif</span>
+    </div>
+    <div class="code-row">
+      <span class="code">EMP-TEST01</span>
+      <span class="code-name">Test User · Demo Corp</span>
+      <span class="badge-active">✓ Aktif</span>
+    </div>
+  </div>
+
+  <div class="info-strip">
+    <div class="info-item">
+      <div class="info-value">3</div>
+      <div class="info-key">Providers</div>
+    </div>
+    <div class="dot">·</div>
+    <div class="info-item">
+      <div class="info-value">8</div>
+      <div class="info-key">Offers</div>
+    </div>
+    <div class="dot">·</div>
+    <div class="info-item">
+      <div class="info-value">6</div>
+      <div class="info-key">Employee Codes</div>
+    </div>
+    <div class="dot">·</div>
+    <div class="info-item">
+      <div class="info-value">Live</div>
+      <div class="info-key">Supabase</div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUFG Employee Benefits Portal — Internal Proposal 2026</title>
+<style>
+  /* ── Reset & Base ─────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --red:   #C8102E;
+    --dark:  #1A1A2E;
+    --gold:  #B8860B;
+    --blue:  #005FAF;
+    --green: #1A7A4A;
+    --white: #FFFFFF;
+    --lgrey: #F5F5F5;
+    --mgrey: #AAAAAA;
+    --dgrey: #444444;
+  }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #111; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+
+  /* ── Deck Container ───────────────────────────────────────────────── */
+  #deck {
+    position: relative;
+    width: 100vw; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Slide ────────────────────────────────────────────────────────── */
+  .slide {
+    position: absolute;
+    width: min(177.78vh, 100vw);
+    height: min(56.25vw, 100vh);
+    background: var(--white);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .slide.active { display: flex; }
+
+  /* ── Chrome ───────────────────────────────────────────────────────── */
+  .chrome-header {
+    background: var(--dark);
+    padding: 0 1.2em;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+    height: 13%;
+  }
+  .chrome-header h1 { font-size: clamp(12px,1.8vw,22px); font-weight: 700; color: #fff; letter-spacing: .01em; }
+  .chrome-header .sub { font-size: clamp(8px,1vw,12px); color: var(--mgrey); font-style: italic; margin-top:.15em; }
+  .mufg-badge {
+    background: var(--red);
+    color: #fff; font-weight: 800; font-size: clamp(13px,1.8vw,22px);
+    padding: .25em .8em; letter-spacing:.08em; flex-shrink:0;
+  }
+  .side-rule { width:.6%; background: var(--red); flex-shrink:0; }
+  .body { flex:1; display:flex; overflow:hidden; }
+  .footer {
+    background: var(--lgrey);
+    font-size: clamp(6px,.75vw,9px);
+    color: var(--mgrey);
+    padding: .25em 1.2em;
+    flex-shrink:0;
+  }
+
+  /* ── Cover ────────────────────────────────────────────────────────── */
+  .slide-cover { background: var(--dark); }
+  .cover-left-rule { width:.6%; background:var(--red); }
+  .cover-body { flex:1; display:flex; flex-direction:column; justify-content:center; padding: 0 5% 0 4%; }
+  .cover-kicker {
+    display:inline-block; background:var(--red);
+    color:#fff; font-size:clamp(7px,.9vw,11px); font-weight:700;
+    padding:.25em .8em; letter-spacing:.1em; margin-bottom:1.2em; align-self:flex-start;
+  }
+  .cover-title { font-size:clamp(22px,4.5vw,56px); font-weight:800; color:#fff; line-height:1.0; }
+  .cover-subtitle { font-size:clamp(16px,2.8vw,34px); font-weight:700; color:#fff; margin-top:.15em; }
+  .cover-rule { width:35%; height:3px; background:var(--gold); margin:1em 0; }
+  .cover-tagline { font-size:clamp(9px,1.2vw,15px); color:var(--mgrey); line-height:1.5; max-width:70%; }
+  .cover-meta { margin-top:1.5em; font-size:clamp(8px,1vw,13px); color:#ccc; line-height:1.8; }
+  .cover-meta strong { color:#fff; }
+  .cover-bottom { background:var(--red); padding:1.2em 5% 1.2em 4%; }
+  .cover-bottom p { font-size:clamp(8px,1vw,12px); color:#fff; line-height:1.7; }
+  .cover-bottom strong { font-weight:700; }
+  .badge-tr { position:absolute; top:1.5%; right:1.5%; background:#fff; color:var(--red); font-weight:800; font-size:clamp(14px,2vw,24px); padding:.2em .7em; letter-spacing:.08em; }
+
+  /* ── Section Divider ─────────────────────────────────────────────── */
+  .slide-divider { background: var(--dark); }
+  .divider-left { width:.6%; background:var(--red); }
+  .divider-body { flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 6%; }
+  .divider-num { font-size:clamp(40px,9vw,110px); font-weight:800; color:var(--red); line-height:1; }
+  .divider-title { font-size:clamp(18px,3.2vw,40px); font-weight:700; color:#fff; margin-top:.1em; }
+  .divider-rule { width:28%; height:3px; background:var(--gold); margin:.8em 0; }
+  .divider-sub { font-size:clamp(8px,1.1vw,14px); color:var(--mgrey); font-style:italic; }
+  .divider-badge { position:absolute; bottom:2%; right:2%; font-size:clamp(7px,.8vw,10px); color:var(--mgrey); }
+
+  /* ── TOC ─────────────────────────────────────────────────────────── */
+  .toc-grid { display:grid; grid-template-columns:1fr 1fr; gap:.6em 2em; padding:1.5em 2em; align-content:start; }
+  .toc-item { display:flex; align-items:center; gap:.7em; }
+  .toc-num { background:var(--red); color:#fff; font-weight:700; font-size:clamp(10px,1.2vw,15px); min-width:2em; text-align:center; padding:.25em .4em; flex-shrink:0; }
+  .toc-label { font-size:clamp(10px,1.2vw,15px); font-weight:600; color:var(--dark); }
+
+  /* ── Generic content helpers ──────────────────────────────────────── */
+  .content { flex:1; padding:1.2em 1.5em 0.5em; overflow:hidden; }
+  .banner { background:var(--dark); color:#fff; padding:.5em 1em; font-size:clamp(8px,1vw,12px); margin-bottom:.8em; line-height:1.5; }
+  .banner em { color:var(--mgrey); font-style:italic; }
+
+  /* stat boxes */
+  .stat-row { display:flex; gap:.8em; }
+  .stat-box {
+    flex:1; border:1.5px solid var(--red); padding:.6em .8em;
+    border-top:4px solid var(--red);
+  }
+  .stat-num { font-size:clamp(18px,2.8vw,36px); font-weight:800; color:var(--red); line-height:1.1; }
+  .stat-label { font-size:clamp(7px,.85vw,11px); color:var(--dgrey); margin-top:.3em; line-height:1.4; }
+
+  /* benchmark cards */
+  .bench-row { display:flex; gap:.6em; }
+  .bench-card { flex:1; border:2px solid; padding:.5em .6em; }
+  .bench-name { font-size:clamp(8px,.9vw,11px); font-weight:700; margin-bottom:.2em; }
+  .bench-metric { font-size:clamp(14px,2vw,26px); font-weight:800; line-height:1.1; }
+  .bench-detail { font-size:clamp(7px,.8vw,10px); color:var(--dgrey); margin-top:.3em; line-height:1.4; }
+
+  /* driver rows */
+  .driver { background:var(--lgrey); display:flex; align-items:stretch; margin-bottom:.5em; }
+  .driver-rule { width:5px; background:var(--red); flex-shrink:0; }
+  .driver-body { padding:.5em .8em; }
+  .driver-title { font-size:clamp(9px,1.05vw,13px); font-weight:700; color:var(--red); }
+  .driver-text  { font-size:clamp(8px,.9vw,11px); color:var(--dgrey); margin-top:.15em; line-height:1.4; }
+
+  /* failure cards */
+  .fail-grid { display:grid; grid-template-columns:1fr 1fr; gap:.7em; }
+  .fail-card { border:1.5px solid var(--red); }
+  .fail-head { background:var(--red); color:#fff; font-size:clamp(8px,.95vw,12px); font-weight:700; padding:.4em .6em; }
+  .fail-body { padding:.5em .7em; }
+  .fail-problem { font-size:clamp(7px,.82vw,10px); color:var(--dgrey); font-style:italic; line-height:1.4; margin-bottom:.4em; }
+  .fail-answer { font-size:clamp(7px,.85vw,11px); color:var(--dark); font-weight:600; line-height:1.4; }
+  .fail-divider { height:1px; background:var(--mgrey); margin:.3em 0; }
+
+  /* moat comparison */
+  .moat-cols { display:flex; gap:.7em; height:100%; }
+  .moat-col { flex:1; border:2px solid; display:flex; flex-direction:column; }
+  .moat-head { padding:.5em .7em; font-weight:700; font-size:clamp(9px,1.05vw,13px); color:#fff; }
+  .moat-list { padding:.5em .8em; font-size:clamp(7px,.85vw,11px); color:var(--dgrey); line-height:1.6; flex:1; }
+  .moat-list li { margin-bottom:.25em; }
+
+  /* pillar grid */
+  .pillar-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.6em; }
+  .pillar-col2 { grid-template-columns:repeat(2,1fr); }
+  .pillar { border-left:5px solid var(--red); padding:.5em .8em; background:var(--white); }
+  .pillar-title { font-size:clamp(9px,1.1vw,13px); font-weight:700; color:var(--red); }
+  .pillar-body  { font-size:clamp(7px,.88vw,11px); color:var(--dgrey); margin-top:.35em; line-height:1.4; }
+
+  /* layer diagram */
+  .layer-row { display:flex; align-items:stretch; margin-bottom:.45em; border:1px solid; }
+  .layer-label { padding:.4em .7em; font-weight:700; font-size:clamp(8px,.95vw,12px); color:#fff; min-width:20%; display:flex; align-items:center; }
+  .layer-detail { padding:.4em .8em; font-size:clamp(7px,.88vw,11px); color:var(--dgrey); display:flex; align-items:center; flex:1; background:#fff; }
+
+  /* journey steps */
+  .journey { display:flex; gap:0; height:100%; }
+  .step { flex:1; display:flex; flex-direction:column; }
+  .step-num { color:#fff; font-weight:800; font-size:clamp(10px,1.3vw,16px); text-align:center; padding:.4em .2em; }
+  .step-body { flex:1; padding:.5em .6em; font-size:clamp(7px,.85vw,11px); color:var(--dgrey); line-height:1.5; background:var(--lgrey); }
+  .step-arrow { font-size:clamp(10px,1.3vw,16px); color:var(--red); font-weight:700; display:flex; align-items:center; padding-top:1.5em; flex-shrink:0; }
+
+  /* provider cards */
+  .provider-row { display:flex; gap:.7em; height:100%; }
+  .prov-card { flex:1; border:2px solid; display:flex; flex-direction:column; }
+  .prov-head { padding:.5em .7em; font-size:clamp(10px,1.3vw,15px); font-weight:800; color:#fff; text-align:center; }
+  .prov-list { padding:.6em .8em; font-size:clamp(7px,.85vw,11px); color:var(--dgrey); line-height:1.7; flex:1; }
+  .prov-list li { margin-bottom:.15em; }
+
+  /* epp cols */
+  .epp-cols { display:flex; gap:.7em; height:100%; }
+  .epp-col { flex:1; border:1.5px solid var(--red); display:flex; flex-direction:column; }
+  .epp-head { background:var(--red); color:#fff; font-weight:700; font-size:clamp(9px,1.05vw,13px); padding:.4em .7em; }
+  .epp-list { padding:.5em .8em; font-size:clamp(7px,.85vw,11px); color:var(--dgrey); line-height:1.65; flex:1; }
+  .epp-list li { margin-bottom:.2em; }
+
+  /* pilot cards */
+  .pilot-grid { display:grid; grid-template-columns:1fr 1fr; gap:.7em; height:100%; }
+  .pilot-card { border:2px solid; }
+  .pilot-head { padding:.4em .7em; font-weight:700; font-size:clamp(9px,1.05vw,13px); color:#fff; }
+  .pilot-list { padding:.5em .8em; font-size:clamp(7px,.85vw,11px); color:var(--dgrey); line-height:1.65; }
+  .pilot-list li { margin-bottom:.2em; }
+
+  /* phase cols */
+  .phase-cols { display:flex; gap:.6em; height:100%; }
+  .phase { flex:1; padding:.8em; display:flex; flex-direction:column; }
+  .phase-title { font-size:clamp(10px,1.3vw,16px); font-weight:800; color:#fff; margin-bottom:.6em; line-height:1.3; }
+  .phase-list { font-size:clamp(8px,.92vw,12px); color:#fff; line-height:1.65; flex:1; }
+  .phase-list li { margin-bottom:.3em; }
+
+  /* feature grid */
+  .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.55em; }
+  .feat { border:1px solid; }
+  .feat-head { padding:.35em .6em; font-weight:700; font-size:clamp(8px,.95vw,12px); color:#fff; }
+  .feat-list { padding:.4em .65em; font-size:clamp(7px,.82vw,10px); color:var(--dgrey); line-height:1.55; }
+  .feat-list li { margin-bottom:.15em; }
+
+  /* tech table */
+  .tech-row { display:flex; align-items:stretch; margin-bottom:.38em; }
+  .tech-label { font-weight:700; font-size:clamp(8px,.95vw,12px); color:#fff; padding:.38em .7em; min-width:18%; display:flex; align-items:center; }
+  .tech-detail { flex:1; font-size:clamp(7px,.85vw,11px); color:var(--dgrey); padding:.38em .8em; display:flex; align-items:center; }
+
+  /* revenue streams */
+  .rev-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.6em; }
+  .rev-bottom { display:grid; grid-template-columns:1fr 1fr; gap:.6em; margin-top:.6em; }
+  .rev-card { border-left:5px solid; padding:.5em .8em; background:var(--lgrey); }
+  .rev-name { font-size:clamp(9px,1.1vw,14px); font-weight:700; }
+  .rev-range { font-size:clamp(10px,1.3vw,16px); font-weight:800; margin:.2em 0; }
+  .rev-desc { font-size:clamp(7px,.82vw,10px); color:var(--dgrey); line-height:1.4; }
+  .rev-strat { font-size:clamp(7px,.8vw,10px); color:var(--dgrey); font-style:italic; margin-top:.3em; line-height:1.35; }
+
+  /* P&L table */
+  .pnl-table { width:100%; border-collapse:collapse; font-size:clamp(7px,.88vw,11px); }
+  .pnl-table th { background:var(--dark); color:#fff; padding:.4em .6em; text-align:center; font-size:clamp(7px,.88vw,11px); }
+  .pnl-table th:first-child { text-align:left; }
+  .pnl-table td { padding:.35em .6em; border-bottom:1px solid #eee; }
+  .pnl-table td:not(:first-child) { text-align:center; }
+  .pnl-table tr.subtotal td { background:var(--lgrey); font-weight:700; }
+  .pnl-table tr.total td { background:var(--red); color:#fff; font-weight:800; font-size:clamp(8px,1vw,13px); }
+  .pnl-table tr:nth-child(even):not(.subtotal):not(.total) td { background:#fafafa; }
+  .pnl-note { font-size:clamp(6px,.75vw,9px); color:var(--mgrey); font-style:italic; margin-top:.5em; }
+
+  /* investment */
+  .inv-row { border:1.5px solid var(--red); border-left:5px solid var(--red); display:flex; align-items:center; padding:.6em .9em; margin-bottom:.5em; gap:1em; }
+  .inv-label { flex:1; font-size:clamp(9px,1.1vw,14px); font-weight:700; color:var(--dark); }
+  .inv-detail { flex:2; font-size:clamp(7px,.85vw,11px); color:var(--dgrey); font-style:italic; }
+  .inv-amount { font-size:clamp(13px,1.8vw,22px); font-weight:800; color:var(--red); flex-shrink:0; }
+  .inv-total { background:var(--red); color:#fff; font-size:clamp(11px,1.5vw,18px); font-weight:800; padding:.6em .9em; display:flex; justify-content:space-between; align-items:center; margin-bottom:.5em; }
+  .return-row { background:var(--dark); display:flex; }
+  .return-cell { flex:1; text-align:center; padding:.5em .3em; border-right:1px solid #333; }
+  .return-cell:last-child { border:none; }
+  .return-label { font-size:clamp(7px,.8vw,10px); color:var(--mgrey); }
+  .return-val { font-size:clamp(13px,1.8vw,22px); font-weight:800; color:#fff; margin-top:.15em; }
+
+  /* roadmap */
+  .roadmap { display:flex; gap:.4em; height:100%; }
+  .rm-col { flex:1; display:flex; flex-direction:column; }
+  .rm-qtr { text-align:center; font-weight:800; font-size:clamp(9px,1.1vw,14px); color:#fff; padding:.4em .2em; }
+  .rm-body { flex:1; background:var(--lgrey); padding:.5em .6em; font-size:clamp(7px,.82vw,10px); color:var(--dgrey); line-height:1.55; }
+  .rm-body li { margin-bottom:.25em; }
+  .rm-body.launch { background:#fff8e8; }
+  .rm-body.launch li { color:var(--dark); font-weight:600; }
+
+  /* next steps */
+  .ns-grid { display:grid; grid-template-columns:1fr 1fr; gap:.7em; height:100%; }
+  .ns-card { border:1.5px solid var(--red); display:flex; }
+  .ns-num { background:var(--red); color:#fff; font-size:clamp(18px,2.8vw,36px); font-weight:800; min-width:12%; display:flex; align-items:center; justify-content:center; }
+  .ns-body { padding:.5em .8em; }
+  .ns-title { font-size:clamp(9px,1.1vw,14px); font-weight:700; color:var(--red); margin-bottom:.35em; }
+  .ns-deadline { font-size:clamp(7px,.82vw,10px); color:var(--red); font-weight:700; margin-top:.35em; }
+  .ns-list { font-size:clamp(7px,.85vw,11px); color:var(--dgrey); line-height:1.6; }
+  .ns-list li { margin-bottom:.15em; }
+
+  /* closing */
+  .slide-closing { background:var(--dark); }
+  .closing-left { width:.6%; background:var(--red); }
+  .closing-body { flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 5% 0 4%; }
+  .closing-line1 { font-size:clamp(14px,2vw,24px); color:var(--mgrey); margin-bottom:.2em; }
+  .closing-line2 { font-size:clamp(26px,4.5vw,56px); font-weight:800; color:#fff; line-height:1.05; }
+  .closing-rule { width:35%; height:3px; background:var(--gold); margin:.8em 0; }
+  .closing-providers { font-size:clamp(8px,1.1vw,14px); color:var(--mgrey); }
+  .closing-meta { margin-top:1.5em; font-size:clamp(8px,.95vw,12px); color:#ccc; line-height:1.8; }
+  .closing-bottom { background:var(--red); padding:1em 5% 1em 4%; font-size:clamp(7px,.88vw,11px); color:#fff; line-height:1.7; }
+
+  /* ── Navigation ───────────────────────────────────────────────────── */
+  #nav {
+    position:fixed; bottom:1.5%; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:.8em; z-index:100;
+    background:rgba(0,0,0,.7); padding:.4em 1em; border-radius:2em;
+  }
+  #nav button {
+    background:none; border:1px solid rgba(255,255,255,.4);
+    color:#fff; font-size:clamp(10px,1.2vw,14px); cursor:pointer;
+    padding:.3em .8em; border-radius:1em; transition:background .2s;
+  }
+  #nav button:hover { background:rgba(255,255,255,.15); }
+  #nav button:disabled { opacity:.3; cursor:default; }
+  #slide-counter { color:#ccc; font-size:clamp(9px,1vw,12px); min-width:4em; text-align:center; }
+  #progress { position:fixed; top:0; left:0; height:3px; background:var(--red); z-index:200; transition:width .35s ease; }
+
+  /* ── Utilities ────────────────────────────────────────────────────── */
+  ul { list-style:none; }
+  ul li::before { content:"• "; color:var(--red); font-weight:700; }
+  .c-red   { color:var(--red)!important; }
+  .c-blue  { color:var(--blue)!important; }
+  .c-green { color:var(--green)!important; }
+  .c-gold  { color:var(--gold)!important; }
+  .c-dark  { color:var(--dark)!important; }
+  .c-white { color:#fff!important; }
+  .bg-red   { background:var(--red)!important; }
+  .bg-blue  { background:var(--blue)!important; }
+  .bg-green { background:var(--green)!important; }
+  .bg-gold  { background:var(--gold)!important; }
+  .bg-dark  { background:var(--dark)!important; }
+  .bd-red   { border-color:var(--red)!important; }
+  .bd-blue  { border-color:var(--blue)!important; }
+  .bd-green { border-color:var(--green)!important; }
+  .bd-gold  { border-color:var(--gold)!important; }
+  .bd-dark  { border-color:var(--dark)!important; }
+  .blr-red   { border-left-color:var(--red)!important; }
+  .blr-blue  { border-left-color:var(--blue)!important; }
+  .blr-green { border-left-color:var(--green)!important; }
+  .blr-gold  { border-left-color:var(--gold)!important; }
+  .blr-dark  { border-left-color:var(--dark)!important; }
+  .btr-red   { border-top-color:var(--red)!important; }
+  .btr-blue  { border-top-color:var(--blue)!important; }
+  .btr-green { border-top-color:var(--green)!important; }
+  .btr-gold  { border-top-color:var(--gold)!important; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="deck">
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  S01  COVER
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-cover active">
+  <div style="display:flex;flex:1;flex-direction:column">
+    <div style="display:flex;flex:1">
+      <div class="cover-left-rule"></div>
+      <div class="cover-body">
+        <span class="cover-kicker">INTERNAL PROPOSAL · CONFIDENTIAL · APRIL 2026</span>
+        <div class="cover-title">MUFG</div>
+        <div class="cover-subtitle">Employee Benefits Portal</div>
+        <div class="cover-rule"></div>
+        <div class="cover-tagline">A white-label B2B2C platform turning MUFG's corporate client network into Indonesia's premier employee benefits and financing channel.</div>
+        <div class="cover-meta">
+          <strong>Pilot:</strong> MUFG Indonesia employees · 500–1,000 headcount · Q2 2026<br>
+          <strong>Providers:</strong> Adira Finance · Home Credit Indonesia · Zurich Insurance · Samsung EPP<br>
+          <em style="color:var(--mgrey)">Strategy &amp; Digital Banking Division · MUFG Bank Ltd.</em>
+        </div>
+      </div>
+    </div>
+    <div class="cover-bottom">
+      <p>Repayment via <strong>payroll deduction (potong gaji)</strong> · OJK-compliant · API-first · Mobile-native</p>
+    </div>
+  </div>
+  <div class="badge-tr">MUFG</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  S02  CONTENTS
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div class="chrome-header h1" style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Contents</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="toc-grid">
+      <div class="toc-item"><div class="toc-num">01</div><div class="toc-label">Executive Summary</div></div>
+      <div class="toc-item"><div class="toc-num">07</div><div class="toc-label">Pilot Program</div></div>
+      <div class="toc-item"><div class="toc-num">02</div><div class="toc-label">Market Opportunity</div></div>
+      <div class="toc-item"><div class="toc-num">08</div><div class="toc-label">Go-to-Market Strategy</div></div>
+      <div class="toc-item"><div class="toc-num">03</div><div class="toc-label">Why B2B2C — and Why Now</div></div>
+      <div class="toc-item"><div class="toc-num">09</div><div class="toc-label">Product Specification</div></div>
+      <div class="toc-item"><div class="toc-num">04</div><div class="toc-label">Solution Overview</div></div>
+      <div class="toc-item"><div class="toc-num">10</div><div class="toc-label">Business Case &amp; Financials</div></div>
+      <div class="toc-item"><div class="toc-num">05</div><div class="toc-label">Platform Architecture</div></div>
+      <div class="toc-item"><div class="toc-num">11</div><div class="toc-label">Roadmap &amp; Next Steps</div></div>
+      <div class="toc-item"><div class="toc-num">06</div><div class="toc-label">Provider Ecosystem</div></div>
+      <div class="toc-item"><div class="toc-num" style="background:var(--gold)">&nbsp;</div><div class="toc-label" style="color:var(--mgrey)">Closing</div></div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 01
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">01</div>
+      <div class="divider-title">Executive Summary</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">One platform. Three providers. The entire MUFG corporate network.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  S04  EXECUTIVE SUMMARY
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Executive Summary</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div style="display:flex;flex:1;gap:1em;padding:1em 1.2em .5em">
+      <!-- left narrative -->
+      <div style="flex:1.1;display:flex;flex-direction:column;gap:.55em">
+        <div class="driver"><div class="driver-rule"></div><div class="driver-body"><div class="driver-title">What We Are Building</div><div class="driver-text">A mobile-first, payroll-integrated employee benefits marketplace — white-labelled under MUFG — connecting corporate employees to vehicle financing, consumer electronics, and insurance through one trusted platform.</div></div></div>
+        <div class="driver"><div class="driver-rule"></div><div class="driver-body"><div class="driver-title">The Business Model</div><div class="driver-text">B2B2C: MUFG sells to corporate HR. Employees transact. Monthly instalments deducted from payroll <em>(potong gaji)</em> — eliminating repayment risk and purchase friction simultaneously.</div></div></div>
+        <div class="driver"><div class="driver-rule"></div><div class="driver-body"><div class="driver-title">The Pilot</div><div class="driver-text">500–1,000 MUFG Indonesia employees from Q2 2026. Three providers embedded at launch: Adira Finance, Home Credit Indonesia, Zurich Insurance.</div></div></div>
+        <div class="driver"><div class="driver-rule"></div><div class="driver-body"><div class="driver-title">The Scale Play</div><div class="driver-text">Extend to MUFG's full Indonesian corporate client book. Embed Samsung EPP as the anchor co-marketing channel. Offer platform-as-a-service to MUFG corporate clients by 2027.</div></div></div>
+        <div class="driver" style="border-left-color:var(--gold)"><div class="driver-rule" style="background:var(--gold)"></div><div class="driver-body"><div class="driver-title" style="color:var(--gold)">The Structural Advantage</div><div class="driver-text">Voya Financial paid <strong>$570M for Benefitfocus</strong> in 2023 precisely because bank-backed benefits distribution is a durable moat. MUFG replicates this architecture natively in Indonesia — built, not bought.</div></div></div>
+      </div>
+      <!-- right stats -->
+      <div style="flex:.8;display:flex;flex-direction:column;gap:.55em">
+        <div class="stat-box" style="border-top-color:var(--red)"><div class="stat-num">USD 1.82B</div><div class="stat-label">Global employee benefits platform market (2025) — growing to USD 2.98B by 2030</div></div>
+        <div class="stat-box" style="border-top-color:var(--blue)"><div class="stat-num c-blue">10.4%</div><div class="stat-label">Market CAGR to 2030. Asia is the fastest-growing, most underpenetrated region.</div></div>
+        <div class="stat-box" style="border-top-color:var(--dark)"><div class="stat-num c-dark">IDR 850T+</div><div class="stat-label">Indonesia consumer financing market size (2025)</div></div>
+        <div class="stat-box" style="border-top-color:var(--gold)"><div class="stat-num c-gold">$570M</div><div class="stat-label">Voya / Benefitfocus deal — bank-backed B2B2C model validated globally</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 02
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">02</div>
+      <div class="divider-title">Market Opportunity</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">A $1.82B global market at 10.4% CAGR — Indonesia is the next frontier.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S06  GLOBAL MARKET CONTEXT -->
+<section class="slide">
+  <div class="chrome-header">
+    <div>
+      <div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Global Market Context</div>
+      <div style="font-size:clamp(7px,.85vw,11px);color:var(--mgrey);font-style:italic">Source: B2B2C Employee Benefits Portal Global Market Review, April 2026</div>
+    </div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="banner">The global employee benefits platform market is <strong>USD 1.82B in 2025</strong>, reaching <strong>USD 2.98B by 2030</strong> (CAGR 10.4%). North America holds ~39% of market share. <em>Asia is fastest-growing and most underpenetrated.</em></div>
+      <div class="bench-row" style="margin-bottom:.6em">
+        <div class="bench-card bd-red" style="border-color:var(--red)">
+          <div class="bench-name c-red">Benefitfocus (US)</div>
+          <div class="bench-metric c-red">$570M</div>
+          <div class="bench-detail">Acquired by Voya Financial 2023. 25M+ lives served. Bank-backed distribution model. 49% premium over market price.</div>
+        </div>
+        <div class="bench-card" style="border-color:var(--blue)">
+          <div class="bench-name c-blue">Benefit Systems / MultiSport (CEE)</div>
+          <div class="bench-metric c-blue">EUR 2.1B</div>
+          <div class="bench-detail">Market cap. 2M cards · 41,000+ employer partners across 6 countries. 73% of users exercise more; 91% call it an important benefit.</div>
+        </div>
+        <div class="bench-card" style="border-color:var(--dark)">
+          <div class="bench-name c-dark">Benifex (Europe)</div>
+          <div class="bench-metric c-dark">3,000+</div>
+          <div class="bench-detail">Employer clients in 100+ countries. Formed Feb 2025 via Benefex + Benify merger. First pan-European scaled B2B2C platform.</div>
+        </div>
+        <div class="bench-card" style="border-color:var(--green)">
+          <div class="bench-name c-green">Pluxee (Global)</div>
+          <div class="bench-metric c-green">36M</div>
+          <div class="bench-detail">Employee users · 500,000+ corporate clients · 31 countries. 3–7% merchant discount fee per transaction. Spun off from Sodexo 2023–24.</div>
+        </div>
+        <div class="bench-card" style="border-color:var(--gold)">
+          <div class="bench-name c-gold">Darwinbox (Asia)</div>
+          <div class="bench-metric c-gold">$72M</div>
+          <div class="bench-detail">Raised at unicorn valuation. 4M employees · 1,000+ orgs · 130+ countries. Gartner Magic Quadrant HCM 4 consecutive years.</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box btr-red"><div class="stat-num">68M+</div><div class="stat-label">Formal-sector employees in Indonesia — benefit channel deeply underserved</div></div>
+        <div class="stat-box" style="border-top-color:var(--blue)"><div class="stat-num c-blue">~32%</div><div class="stat-label">Indonesian employees with no access to formal credit</div></div>
+        <div class="stat-box" style="border-top-color:var(--dark)"><div class="stat-num c-dark">3×</div><div class="stat-label">Higher conversion via employer channel vs. direct-to-consumer</div></div>
+        <div class="stat-box" style="border-top-color:var(--green)"><div class="stat-num c-green">IDR 850T+</div><div class="stat-label">Indonesia consumer financing market (2025)</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 03
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">03</div>
+      <div class="divider-title">Why B2B2C — and Why Now</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">Global precedent is clear. The failure patterns are equally instructive.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S08  FAILURE PATTERNS -->
+<section class="slide">
+  <div class="chrome-header">
+    <div>
+      <div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">What the Global Market Teaches Us</div>
+      <div style="font-size:clamp(7px,.85vw,11px);color:var(--mgrey);font-style:italic">Four recurring failure patterns — and how MUFG's architecture avoids each one</div>
+    </div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="banner"><em>"Every B2B2C platform collapse maps to one of four structural failures. MUFG's design is an explicit counter to all four." — Global Market Review, April 2026</em></div>
+      <div class="fail-grid">
+        <div class="fail-card">
+          <div class="fail-head">Failure 1 — Exit-Dependent Capital</div>
+          <div class="fail-body">
+            <div class="fail-problem">Level (US, $27M raised) shut down January 2025 when its acquisition fell through — no profitability path, no runway. Alza ($6.6M, backed by Thrive Capital) shut the same month. Both were implicitly dependent on M&amp;A exits.</div>
+            <div class="fail-divider"></div>
+            <div class="fail-answer">MUFG Answer: MUFG is an institutional owner. This is a strategic business line with long-term capital commitment — not a venture-backed startup waiting for an exit.</div>
+          </div>
+        </div>
+        <div class="fail-card">
+          <div class="fail-head">Failure 2 — Niche Without Cross-Sell</div>
+          <div class="fail-body">
+            <div class="fail-problem">Level served dental/vision only. Alza targeted Latino workers exclusively. Neither could expand ARPU to justify the economics of B2B employer sales cycles — the cost of acquiring one employer contract demands broad product suites.</div>
+            <div class="fail-divider"></div>
+            <div class="fail-answer">MUFG Answer: Three product categories at launch (vehicles, electronics, insurance) plus a co-marketing channel. Multi-product ARPU from day one.</div>
+          </div>
+        </div>
+        <div class="fail-card">
+          <div class="fail-head">Failure 3 — Post-Acquisition Integration</div>
+          <div class="fail-body">
+            <div class="fail-problem">Darwin/Thomsons under Mercer (2016): organizational chaos, talent attrition, client service degradation. The startup's consumer-experience ethos was incompatible with a consulting firm's governance model. A cautionary M&amp;A tale.</div>
+            <div class="fail-divider"></div>
+            <div class="fail-answer">MUFG Answer: Organic build. No culture clash. Full control of product roadmap, client relationships, and technical velocity.</div>
+          </div>
+        </div>
+        <div class="fail-card">
+          <div class="fail-head">Failure 4 — Adoption Debt</div>
+          <div class="fail-body">
+            <div class="fail-problem">Platforms deployed by HR and ignored by employees. Without mobile-first UX and payroll automation, enrollment rates stagnate far below the employer contract base — undermining renewal economics across the industry.</div>
+            <div class="fail-divider"></div>
+            <div class="fail-answer">MUFG Answer: Potong gaji creates inherent engagement — the platform is embedded in the monthly salary workflow, not an optional add-on employees must remember to open.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- S09  INSTITUTIONAL MOAT -->
+<section class="slide">
+  <div class="chrome-header">
+    <div>
+      <div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">The Institutional-Backer Moat</div>
+      <div style="font-size:clamp(7px,.85vw,11px);color:var(--mgrey);font-style:italic">Voya / Benefitfocus is the closest global analogue to MUFG's strategy</div>
+    </div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="banner"><em>"Bank-backed benefits distribution is a durable competitive moat no pure-play startup can replicate." — Global Market Review, April 2026</em></div>
+      <div class="moat-cols" style="height:auto;flex:1">
+        <div class="moat-col" style="border-color:var(--blue)">
+          <div class="moat-head bg-blue">Voya + Benefitfocus — US Analogue</div>
+          <div class="moat-list">
+            <ul>
+              <li>Voya (financial institution) acquires Benefitfocus for <strong>$570M</strong> — 49% premium</li>
+              <li>Combined entity serves <strong>38 million individuals</strong> (~1 in 10 Americans)</li>
+              <li>Benefitfocus owned the employer relationship and benefits data</li>
+              <li>Voya brought distribution scale and financial product depth</li>
+              <li>Result: unassailable market position no pure-play startup can replicate</li>
+            </ul>
+          </div>
+        </div>
+        <div class="moat-col" style="border-color:var(--red)">
+          <div class="moat-head bg-red">MUFG Employee Benefits Portal — Indonesia</div>
+          <div class="moat-list">
+            <ul>
+              <li>MUFG (financial institution) builds the portal as a <strong>strategic business line</strong> — no acquisition premium</li>
+              <li>MUFG owns the payroll relationship, corporate credit data, and employer trust</li>
+              <li>Providers bring products; MUFG brings the distribution channel</li>
+              <li>Potong gaji mirrors Voya's advantage: the financial institution controls the repayment rail</li>
+              <li>Same structural moat — built from scratch at a fraction of the cost</li>
+            </ul>
+          </div>
+        </div>
+        <div class="moat-col" style="border-color:var(--green)">
+          <div class="moat-head bg-green">Why MUFG Wins vs. Pure-Play Portals</div>
+          <div class="moat-list">
+            <ul>
+              <li>No reliance on VC exit — long-term capital commitment</li>
+              <li>Employer trust already established via the banking relationship</li>
+              <li>Payroll deduction eliminates provider repayment risk → better rates for employees</li>
+              <li>OJK-licensed entity — no regulatory bootstrapping required</li>
+              <li>Samsung EPP and future co-marketing create non-provider revenue from launch</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 04
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">04</div>
+      <div class="divider-title">Solution Overview</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">One portal. Multiple products. Zero friction repayment.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S11  SOLUTION -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Solution: MUFG Employee Benefits Portal</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="banner" style="text-align:center;font-weight:700">A single white-label marketplace connecting MUFG's corporate employees to vehicles, devices, and insurance — repaid automatically via payroll deduction.</div>
+      <div class="pillar-grid" style="margin-top:.7em">
+        <div class="pillar blr-red" style="border-left-color:var(--red)">
+          <div class="pillar-title">B2B2C Ownership</div>
+          <div class="pillar-body">MUFG owns the channel. Corporate HR administers. Employees transact. Revenue flows to MUFG via origination fees, platform SaaS, and co-marketing — not from employees directly.</div>
+        </div>
+        <div class="pillar" style="border-left-color:var(--dark)">
+          <div class="pillar-title c-dark">Payroll Deduction (Potong Gaji)</div>
+          <div class="pillar-body">Zero-friction repayment deducted from monthly salary. Eliminates default risk for providers, enabling better rates and higher approval rates for employees.</div>
+        </div>
+        <div class="pillar" style="border-left-color:var(--blue)">
+          <div class="pillar-title c-blue">Multi-Provider Marketplace</div>
+          <div class="pillar-body">Adira Finance (vehicles) · Home Credit Indonesia (devices &amp; white goods) · Zurich Insurance (life, PA, health top-up, device protection) — extensible to new providers.</div>
+        </div>
+        <div class="pillar" style="border-left-color:var(--green)">
+          <div class="pillar-title c-green">White-Label Mobile App</div>
+          <div class="pillar-body">Branded for MUFG. iOS &amp; Android. API-first architecture. Customisable per corporate client as the platform scales beyond the pilot.</div>
+        </div>
+        <div class="pillar" style="border-left-color:var(--gold)">
+          <div class="pillar-title c-gold">Corporate Marketing Distribution</div>
+          <div class="pillar-body">Samsung EPP embedded from launch — exclusive employee pricing, financed via Home Credit. Template for other MUFG corporate client brand activations (automotive OEMs, FMCG, telcos).</div>
+        </div>
+        <div class="pillar" style="border-left-color:var(--red)">
+          <div class="pillar-title">The Network Flywheel</div>
+          <div class="pillar-body">Each corporate client adds employee users → more co-marketing inventory for brands → brands pay more → platform value increases → easier to onboard next client. Mirrors Benefit Systems' 41,000-employer flywheel.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 05
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">05</div>
+      <div class="divider-title">Platform Architecture</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">API-first. Mobile-native. OJK-compliant.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S13  ARCHITECTURE -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Platform Architecture — Layer View</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="layer-row" style="border-color:var(--red)">
+        <div class="layer-label bg-red">Layer 1 — Front-End</div>
+        <div class="layer-detail">White-label Mobile App (iOS / Android) · Employee Web Portal · HR Admin Dashboard · MUFG Design System</div>
+      </div>
+      <div class="layer-row" style="border-color:var(--blue)">
+        <div class="layer-label bg-blue">Layer 2 — Platform Core</div>
+        <div class="layer-detail">Employee Identity &amp; SSO · Product Catalogue Engine · Eligibility Engine · Checkout &amp; Application Flow · Notification Service</div>
+      </div>
+      <div class="layer-row" style="border-color:var(--dark)">
+        <div class="layer-label bg-dark">Layer 3 — Payroll Integration</div>
+        <div class="layer-detail">REST / SFTP to HR Payroll System · Deduction Scheduler · Monthly Reconciliation Engine · Hardship Pause &amp; Override</div>
+      </div>
+      <div class="layer-row" style="border-color:var(--green)">
+        <div class="layer-label bg-green">Layer 4 — Provider APIs</div>
+        <div class="layer-detail">Adira Finance API · Home Credit Indonesia API · Zurich Insurance Policy API · Samsung EPP API · Extensible connector framework</div>
+      </div>
+      <div class="layer-row" style="border-color:var(--gold)">
+        <div class="layer-label bg-gold" style="color:var(--dark)">Layer 5 — Data &amp; Compliance</div>
+        <div class="layer-detail">OJK POJK 6/2022 (MPMM) compliance · Data residency: AWS Jakarta (ap-southeast-3) · Snowflake DWH · Audit logs · PDPA-compliant · ISO 27001 roadmap</div>
+      </div>
+      <div style="margin-top:.7em">
+        <div class="banner" style="background:var(--lgrey);color:var(--dgrey);font-style:italic">Asia insight (Darwinbox benchmark): the winning Asian model embeds benefits inside the payroll workflow — not as a standalone app. Potong gaji achieves exactly this integration.</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- S14  USER JOURNEY -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Employee User Journey — End-to-End</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div style="display:flex;flex:1;padding:.8em 1em .5em;gap:0">
+      <div class="step">
+        <div class="step-num bg-red">STEP 1<br>Register</div>
+        <div class="step-body">Download app. Authenticate via MUFG SSO. eKYC: KTP + selfie + liveness check. Invite-code gated during pilot phase.</div>
+      </div>
+      <div class="step-arrow">▶</div>
+      <div class="step">
+        <div class="step-num bg-red">STEP 2<br>Browse</div>
+        <div class="step-body">Browse catalogue: Vehicles (Adira), Devices &amp; Samsung EPP (Home Credit), Insurance (Zurich). Personalised eligibility filter applied.</div>
+      </div>
+      <div class="step-arrow">▶</div>
+      <div class="step">
+        <div class="step-num bg-red">STEP 3<br>Apply</div>
+        <div class="step-body">Select product. Form auto-populated from HR profile. Real-time eligibility check against salary-to-instalment ratio. Document upload.</div>
+      </div>
+      <div class="step-arrow">▶</div>
+      <div class="step">
+        <div class="step-num bg-red">STEP 4<br>Approve</div>
+        <div class="step-body">Provider decision in &lt;24 hours. Terms displayed in-app. E-signature for contract execution. Full digital audit trail retained.</div>
+      </div>
+      <div class="step-arrow">▶</div>
+      <div class="step">
+        <div class="step-num bg-red">STEP 5<br>Receive</div>
+        <div class="step-body">Vehicle delivered / device shipped / policy issued. Confirmation and schedule visible in app. Samsung EPP: direct shipment from Samsung.</div>
+      </div>
+      <div class="step-arrow">▶</div>
+      <div class="step">
+        <div class="step-num bg-red">STEP 6<br>Repay</div>
+        <div class="step-body">Automatic monthly deduction from payroll. Statement in-app. Zero manual action required. HR can pause deduction in hardship cases.</div>
+      </div>
+    </div>
+    <div style="padding:0 1em .4em">
+      <div class="banner" style="background:var(--lgrey);color:var(--dgrey)">CIPD Asia 2024: <strong>49% of APAC organisations</strong> cite meeting employee expectations as their #2 challenge (up 11pp YoY). This six-step journey is designed to exceed that bar.</div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 06
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">06</div>
+      <div class="divider-title">Provider Ecosystem</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">Three providers at launch. One corporate marketing channel.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S16  PROVIDERS -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Day-1 Provider Ecosystem</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div style="padding:.8em 1em .5em;flex:1;display:flex;flex-direction:column">
+      <div class="provider-row" style="flex:1">
+        <div class="prov-card" style="border-color:var(--red)">
+          <div class="prov-head bg-red">ADIRA FINANCE</div>
+          <div class="prov-list">
+            <ul>
+              <li><strong>Category:</strong> Vehicle Financing</li>
+              <li><strong>Products:</strong> New &amp; used car loans; motorcycle loans</li>
+              <li><strong>Tenor:</strong> 12–60 months · DP: from 10%</li>
+              <li><strong>Pricing:</strong> Fleet/group rate — below retail</li>
+              <li><strong>Integration:</strong> REST API · eKYC · instant scoring</li>
+              <li><strong>MUFG revenue:</strong> Origination fee 0.5–1.0% per deal</li>
+            </ul>
+          </div>
+        </div>
+        <div class="prov-card" style="border-color:var(--blue)">
+          <div class="prov-head bg-blue">HOME CREDIT INDONESIA</div>
+          <div class="prov-list">
+            <ul>
+              <li><strong>Category:</strong> Consumer Electronics &amp; White Goods</li>
+              <li><strong>Products:</strong> Smartphones (incl. Samsung EPP), laptops, TVs, fridges, washing machines</li>
+              <li><strong>Tenor:</strong> 3–36 months · 0% instalment promos</li>
+              <li><strong>No collateral</strong> · Instant POS approval</li>
+              <li><strong>Integration:</strong> POS API · merchant catalogue sync</li>
+              <li><strong>MUFG revenue:</strong> Origination fee + Samsung co-marketing</li>
+            </ul>
+          </div>
+        </div>
+        <div class="prov-card" style="border-color:var(--dark)">
+          <div class="prov-head bg-dark">ZURICH INSURANCE</div>
+          <div class="prov-list">
+            <ul>
+              <li><strong>Category:</strong> Insurance</li>
+              <li><strong>Products:</strong> Term life (group), PA, health top-up, device protection</li>
+              <li><strong>Premium:</strong> via payroll deduction</li>
+              <li><strong>Pricing:</strong> Group rates 20–30% below retail</li>
+              <li><strong>Digital claims</strong> via app</li>
+              <li><strong>MUFG revenue:</strong> Origination fee + referral commission</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- S17  SAMSUNG EPP -->
+<section class="slide">
+  <div class="chrome-header">
+    <div>
+      <div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Corporate Marketing Channel: Samsung EPP</div>
+      <div style="font-size:clamp(7px,.85vw,11px);color:var(--mgrey);font-style:italic">The platform as distribution — not just benefits administration</div>
+    </div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="banner" style="text-align:center">Beyond provider fees: MUFG's portal is a <strong>co-marketing platform</strong> for corporate clients' own consumer products. Samsung EPP is the Day-1 anchor.</div>
+      <div class="epp-cols" style="margin-top:.6em;height:auto;flex:1">
+        <div class="epp-col">
+          <div class="epp-head">What is Samsung EPP?</div>
+          <div class="epp-list">
+            <ul>
+              <li>Employee Purchase Programme — exclusive Samsung discounts for corporate employees</li>
+              <li>Galaxy smartphones, tablets, wearables at <strong>10–25% below MSRP</strong></li>
+              <li>Financed via 0% instalment through Home Credit Indonesia (already a platform partner — no extra integration required)</li>
+              <li>Employee buys in-app; instalment deducted via payroll; Samsung ships direct</li>
+              <li>Samsung Indonesia gains a <strong>low-CAC B2B2C channel</strong> with pre-qualified, salaried consumers</li>
+            </ul>
+          </div>
+        </div>
+        <div class="epp-col">
+          <div class="epp-head">Revenue for MUFG</div>
+          <div class="epp-list">
+            <ul>
+              <li>Co-marketing fee from Samsung Indonesia per campaign</li>
+              <li>Transaction fee per order processed through the portal</li>
+              <li>Platform stickiness: Samsung activations drive monthly app opens</li>
+              <li>Proof of concept for other MUFG corporate clients (automotive OEMs, FMCG, telcos)</li>
+              <li>Estimated: <strong>IDR 200–500M per Samsung campaign cycle</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div class="epp-col">
+          <div class="epp-head">The Benefit Systems Analogy</div>
+          <div class="epp-list">
+            <ul>
+              <li>Benefit Systems (Poland) built a <strong>EUR 2.1B market cap</strong> on a single product: MultiSport gym access</li>
+              <li>Network effect: 41,000+ employers → 2M users → gyms compete to join the network</li>
+              <li>MUFG replicates this logic: Samsung EPP is the anchor; other brands follow to access the employee base</li>
+              <li>Each new corporate client adds co-marketing inventory — rising platform value for all parties</li>
+              <li>This is the <strong>second revenue engine</strong> that pure-play portals lack</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 07
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">07</div>
+      <div class="divider-title">Pilot Program</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">MUFG Indonesia · 500–1,000 employees · Q2–Q3 2026</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S19  PILOT -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Pilot Program: Design &amp; Success Criteria</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div style="padding:.8em 1em .3em;flex:1;display:flex;flex-direction:column;gap:.5em">
+      <div class="pilot-grid" style="flex:1">
+        <div class="pilot-card" style="border-color:var(--red)">
+          <div class="pilot-head bg-red">Participants</div>
+          <div class="pilot-list"><ul>
+            <li>500–1,000 MUFG Indonesia permanent staff</li>
+            <li>All employee grades included</li>
+            <li>HR lead: MUFG Indonesia HR Division</li>
+            <li>Pilot window: Q2–Q3 2026 (6 months)</li>
+          </ul></div>
+        </div>
+        <div class="pilot-card" style="border-color:var(--blue)">
+          <div class="pilot-head bg-blue">Products Offered</div>
+          <div class="pilot-list"><ul>
+            <li>Adira: Motorcycle (Honda/Yamaha) + car loans</li>
+            <li>Home Credit: Samsung Galaxy bundles + white goods</li>
+            <li>Zurich: Group term life, PA plan, device protection</li>
+            <li>Samsung EPP: Exclusive pricing soft-launch</li>
+          </ul></div>
+        </div>
+        <div class="pilot-card" style="border-color:var(--dark)">
+          <div class="pilot-head bg-dark">Success Metrics</div>
+          <div class="pilot-list"><ul>
+            <li>≥ 30% employee registration within 90 days</li>
+            <li>≥ 15% transaction conversion (≥1 product taken)</li>
+            <li>Zero payroll reconciliation errors</li>
+            <li>Employee NPS ≥ 40</li>
+          </ul></div>
+        </div>
+        <div class="pilot-card" style="border-color:var(--green)">
+          <div class="pilot-head bg-green">Operational Setup</div>
+          <div class="pilot-list"><ul>
+            <li>Payroll integration: API with MUFG HR payroll system</li>
+            <li>Onboarding: eKYC (KTP + selfie + liveness check)</li>
+            <li>Deduction schedule: monthly, aligned to payroll run</li>
+            <li>Support: in-app chat + dedicated HR helpdesk</li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="banner" style="background:var(--lgrey);color:var(--dgrey);margin-top:0">Asia context: <strong>49% of APAC organisations</strong> cite meeting employee expectations as their #2 challenge (up 11pp YoY — CIPD 2024). The pilot's NPS target directly benchmarks against this gap.</div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 08
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">08</div>
+      <div class="divider-title">Go-to-Market Strategy</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">Pilot → Scale → Platform-as-a-Service</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S21  GTM -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Go-to-Market: Three Phases</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div style="padding:.8em 1em .5em;flex:1;display:flex">
+      <div class="phase-cols" style="flex:1">
+        <div class="phase bg-red">
+          <div class="phase-title">Phase 1<br>Q1–Q2 2026<br>Build &amp; Integrate</div>
+          <div class="phase-list"><ul>
+            <li>Build platform MVP (mobile + web + APIs)</li>
+            <li>Onboard 3 providers (Adira, Home Credit, Zurich)</li>
+            <li>Sign Samsung EPP co-marketing MOU</li>
+            <li>HR payroll API integration with MUFG Indonesia</li>
+            <li>OJK compliance filing &amp; security audit</li>
+          </ul></div>
+        </div>
+        <div class="phase bg-blue">
+          <div class="phase-title">Phase 2<br>Q3–Q4 2026<br>Pilot &amp; Learn</div>
+          <div class="phase-list"><ul>
+            <li>Launch pilot: 500–1,000 MUFG Indonesia employees</li>
+            <li>Samsung EPP soft-launch on platform</li>
+            <li>Collect usage data, iterate UX weekly</li>
+            <li>HR admin dashboard v1 live</li>
+            <li>Prepare board report on pilot outcomes</li>
+          </ul></div>
+        </div>
+        <div class="phase bg-dark">
+          <div class="phase-title">Phase 3<br>Q1–Q2 2027<br>Scale &amp; PaaS</div>
+          <div class="phase-list"><ul>
+            <li>Expand to 5 MUFG corporate clients (10,000 employees)</li>
+            <li>Add 2–3 new providers (BNPL, travel insurance)</li>
+            <li>Samsung EPP full national rollout</li>
+            <li>Launch Platform-as-a-Service for MUFG corporate clients</li>
+            <li>Target: 25,000+ employees by end of 2027</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 09
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">09</div>
+      <div class="divider-title">Product Specification</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">Mobile-first. API-first. Compliance built in.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S23  FEATURES -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Product Specification — App Feature Set</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="feat-grid">
+        <div class="feat" style="border-color:var(--red)">
+          <div class="feat-head bg-red">Authentication &amp; Onboarding</div>
+          <div class="feat-list"><ul>
+            <li>SSO via MUFG employee directory</li>
+            <li>eKYC: KTP + selfie + liveness check</li>
+            <li>Biometric login (Face ID / Fingerprint)</li>
+            <li>Invite-code gated during pilot</li>
+          </ul></div>
+        </div>
+        <div class="feat" style="border-color:var(--blue)">
+          <div class="feat-head bg-blue">Product Catalogue</div>
+          <div class="feat-list"><ul>
+            <li>Category tiles: Vehicles · Devices · Insurance · Samsung EPP</li>
+            <li>Real-time inventory &amp; availability</li>
+            <li>Personalised eligibility filter</li>
+            <li>Exclusive employee pricing badges</li>
+          </ul></div>
+        </div>
+        <div class="feat" style="border-color:var(--dark)">
+          <div class="feat-head bg-dark">Application Flow</div>
+          <div class="feat-list"><ul>
+            <li>Form auto-populated from HR profile</li>
+            <li>Real-time eligibility engine (salary vs instalment ratio)</li>
+            <li>Document upload: NPWP, KTP, salary slip</li>
+            <li>E-signature for contract execution</li>
+          </ul></div>
+        </div>
+        <div class="feat" style="border-color:var(--green)">
+          <div class="feat-head bg-green">Payroll Deduction</div>
+          <div class="feat-list"><ul>
+            <li>Deduction schedule synced with monthly payroll</li>
+            <li>Employee consent &amp; deduction dashboard</li>
+            <li>HR override &amp; hardship pause capability</li>
+            <li>Monthly statement &amp; repayment history</li>
+          </ul></div>
+        </div>
+        <div class="feat" style="border-color:var(--gold)">
+          <div class="feat-head bg-gold" style="color:var(--dark)">Notifications &amp; Support</div>
+          <div class="feat-list"><ul>
+            <li>Push: approval, deduction, promotions</li>
+            <li>In-app chat (CS) + HR helpdesk escalation</li>
+            <li>Zurich insurance claims submission</li>
+            <li>Referral &amp; loyalty points (Phase 2)</li>
+          </ul></div>
+        </div>
+        <div class="feat" style="border-color:var(--red)">
+          <div class="feat-head bg-red">Admin Dashboard</div>
+          <div class="feat-list"><ul>
+            <li>HR: headcount, deduction status, reconciliation</li>
+            <li>Provider: leads, approvals, disbursements</li>
+            <li>MUFG: revenue, GMV, platform health KPIs</li>
+            <li>OJK-compliant audit trail &amp; reporting</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- S24  TECH STACK -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Technical Architecture</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="tech-row"><div class="tech-label bg-red">Front-End</div><div class="tech-detail" style="background:var(--lgrey)">React Native (iOS + Android) · Next.js Web Portal · MUFG Design System</div></div>
+      <div class="tech-row"><div class="tech-label bg-blue">API Gateway</div><div class="tech-detail">Kong / AWS API Gateway · OAuth 2.0 / OpenID Connect · WAF + rate limiting</div></div>
+      <div class="tech-row"><div class="tech-label bg-dark">Back-End</div><div class="tech-detail" style="background:var(--lgrey)">Node.js microservices · Eligibility Engine (Python ML) · Notification Service (Firebase)</div></div>
+      <div class="tech-row"><div class="tech-label bg-green">Payroll Connector</div><div class="tech-detail">REST / SFTP to HR system · Monthly deduction scheduler · Reconciliation worker</div></div>
+      <div class="tech-row"><div class="tech-label bg-red">Provider APIs</div><div class="tech-detail" style="background:var(--lgrey)">Adira Finance REST API · Home Credit REST API · Zurich Policy API · Samsung EPP API</div></div>
+      <div class="tech-row"><div class="tech-label bg-blue">Data &amp; Analytics</div><div class="tech-detail">PostgreSQL + Redis · Snowflake DWH · Metabase dashboards · Segment CDP</div></div>
+      <div class="tech-row"><div class="tech-label bg-dark">Infrastructure</div><div class="tech-detail" style="background:var(--lgrey)">AWS Jakarta (ap-southeast-3) · Kubernetes (EKS) · Terraform IaC · SOC 2 Type II</div></div>
+      <div class="tech-row"><div class="tech-label bg-gold" style="color:var(--dark)">Compliance</div><div class="tech-detail">OJK POJK 6/2022 (MPMM) · Data residency: Indonesia · PDPA · ISO 27001 roadmap</div></div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 10
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">10</div>
+      <div class="divider-title">Business Case &amp; Financials</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">Payback ~18 months · EBITDA-positive Year 2 · IRR &gt; 40% over 5 years</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S26  REVENUE MODEL -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Revenue Model</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="rev-grid">
+        <div class="rev-card blr-red">
+          <div class="rev-name c-red">Origination Fee</div>
+          <div class="rev-range c-red">0.5–1.5%</div>
+          <div class="rev-desc">Per approved application, charged to the provider. Primary recurring revenue — scales linearly with GMV.</div>
+        </div>
+        <div class="rev-card" style="border-left-color:var(--blue)">
+          <div class="rev-name c-blue">Platform SaaS Fee</div>
+          <div class="rev-range c-blue">IDR 5–15M /mo</div>
+          <div class="rev-desc">Per corporate client on the platform. Predictable MRR — scales with employer headcount.</div>
+        </div>
+        <div class="rev-card" style="border-left-color:var(--dark)">
+          <div class="rev-name c-dark">Co-marketing Revenue</div>
+          <div class="rev-range c-dark">IDR 50–200M</div>
+          <div class="rev-desc">Per campaign (Samsung EPP anchor). Non-linear upside — each new corporate client adds inventory for brand partners.</div>
+        </div>
+      </div>
+      <div class="rev-bottom">
+        <div class="rev-card" style="border-left-color:var(--green)">
+          <div class="rev-name c-green">Interest Income (Phase 2+)</div>
+          <div class="rev-range c-green">3–5% p.a.</div>
+          <div class="rev-desc">Margin on MUFG-funded instalment products. Not in Year 1 projections — future balance-sheet revenue.</div>
+          <div class="rev-strat">Mirrors Voya/Benefitfocus model: financial institution layering product revenue on top of platform fees.</div>
+        </div>
+        <div class="rev-card" style="border-left-color:var(--gold)">
+          <div class="rev-name c-gold">Data &amp; Analytics</div>
+          <div class="rev-range c-gold">IDR 10–50M /report</div>
+          <div class="rev-desc">Anonymised workforce financial analytics sold to providers and HR consultancies. High-margin add-on.</div>
+          <div class="rev-strat">Pluxee benchmark: merchant-side data products generate 3–7% transaction fee equivalent in additional margin.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- S27  P&L -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">3-Year Financial Projection (IDR Billion)</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <table class="pnl-table">
+        <thead>
+          <tr>
+            <th style="width:38%">Item</th>
+            <th>Year 1 — Pilot (2026)</th>
+            <th>Year 2 — Scale (2027)</th>
+            <th>Year 3 — Growth (2028)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Employees on Platform</td><td>750</td><td>8,000</td><td>25,000</td></tr>
+          <tr><td>Corporate Clients</td><td>1</td><td>5</td><td>15</td></tr>
+          <tr><td>GMV (IDR Bn)</td><td>7.5</td><td>80</td><td>250</td></tr>
+          <tr><td>Origination Fee Revenue</td><td>0.90</td><td>9.60</td><td>30.00</td></tr>
+          <tr><td>Platform SaaS Revenue</td><td>0.06</td><td>0.36</td><td>1.08</td></tr>
+          <tr><td>Co-marketing Revenue</td><td>0.20</td><td>0.60</td><td>1.50</td></tr>
+          <tr class="subtotal"><td>Total Revenue</td><td>1.16</td><td>10.56</td><td>32.58</td></tr>
+          <tr><td>Platform OPEX</td><td>(1.80)</td><td>(3.50)</td><td>(6.00)</td></tr>
+          <tr><td>CAPEX (amortised)</td><td>(1.20)</td><td>(0.60)</td><td>(0.40)</td></tr>
+          <tr class="total"><td>EBITDA</td><td>(1.84)</td><td>6.46</td><td>26.18</td></tr>
+          <tr class="subtotal"><td>EBITDA Margin</td><td>—</td><td>61%</td><td>80%</td></tr>
+        </tbody>
+      </table>
+      <div class="pnl-note">* Assumptions: 15% transaction conversion rate · Avg ticket IDR 10M · 3-provider origination fee model · Samsung EPP co-marketing included Year 1. Global benchmark: Pluxee EBITDA margin ~38%; Benefit Systems EBITDA margin ~22%. MUFG's payroll-deduction model removes collection cost, enabling higher margins.</div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- S28  INVESTMENT -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Investment Required &amp; Return Profile</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div class="content">
+      <div class="inv-row">
+        <div class="inv-label">Platform Build (MVP)</div>
+        <div class="inv-detail">Mobile app, web portal, API integrations, payroll connector, security &amp; OJK audit</div>
+        <div class="inv-amount">IDR 8–10 Billion</div>
+      </div>
+      <div class="inv-row">
+        <div class="inv-label">Pilot Operations (6 months)</div>
+        <div class="inv-detail">3 FTE product &amp; ops staff, cloud infrastructure, provider onboarding, pilot marketing</div>
+        <div class="inv-amount">IDR 1.5 Billion</div>
+      </div>
+      <div class="inv-row">
+        <div class="inv-label">Compliance &amp; Licensing</div>
+        <div class="inv-detail">OJK registration, legal structuring, data-protection audits, PDPA compliance</div>
+        <div class="inv-amount">IDR 0.5 Billion</div>
+      </div>
+      <div class="inv-total">
+        <span>TOTAL INVESTMENT</span>
+        <span>IDR 10–12 Billion</span>
+      </div>
+      <div class="return-row">
+        <div class="return-cell">
+          <div class="return-label">Payback Period</div>
+          <div class="return-val">~18 months</div>
+        </div>
+        <div class="return-cell">
+          <div class="return-label">Break-Even</div>
+          <div class="return-val">End of Year 2</div>
+        </div>
+        <div class="return-cell">
+          <div class="return-label">5-Year IRR</div>
+          <div class="return-val">&gt; 40%</div>
+        </div>
+        <div class="return-cell">
+          <div class="return-label">5-Year NPV</div>
+          <div class="return-val">IDR 85–110B</div>
+        </div>
+      </div>
+      <div class="pnl-note" style="margin-top:.5em">Global comparator: Voya acquired Benefitfocus at a $570M enterprise value (49% premium). MUFG builds the equivalent infrastructure organically for IDR 10–12 Billion — a structural cost advantage that represents the real return on this investment.</div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  DIV 11
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-divider">
+  <div style="display:flex;flex:1">
+    <div class="divider-left"></div>
+    <div class="divider-body">
+      <div class="divider-num">11</div>
+      <div class="divider-title">Roadmap &amp; Next Steps</div>
+      <div class="divider-rule"></div>
+      <div class="divider-sub">From pilot approval to PaaS platform — a 5-quarter path.</div>
+    </div>
+  </div>
+  <div class="divider-badge">MUFG · CONFIDENTIAL</div>
+</section>
+
+<!-- S30  ROADMAP -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Implementation Roadmap</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div style="padding:.8em 1em .5em;flex:1;display:flex">
+      <div class="roadmap" style="flex:1">
+        <div class="rm-col">
+          <div class="rm-qtr bg-red">Q1 2026</div>
+          <div class="rm-body"><ul>
+            <li>Platform design &amp; architecture</li>
+            <li>Provider contract negotiations</li>
+            <li>HR payroll API discovery</li>
+            <li>Samsung EPP MOU signing</li>
+          </ul></div>
+        </div>
+        <div class="rm-col">
+          <div class="rm-qtr bg-red">Q2 2026</div>
+          <div class="rm-body"><ul>
+            <li>MVP development (mobile + API)</li>
+            <li>Payroll integration build</li>
+            <li>eKYC integration (3 providers)</li>
+            <li>Internal UAT &amp; security audit</li>
+          </ul></div>
+        </div>
+        <div class="rm-col">
+          <div class="rm-qtr" style="background:var(--gold);color:var(--dark)">Q3 2026 — LAUNCH ★</div>
+          <div class="rm-body launch"><ul>
+            <li>PILOT LAUNCH — 500–1,000 MUFG Indonesia employees</li>
+            <li>Samsung EPP soft-launch</li>
+            <li>Weekly ops review cadence</li>
+            <li>UX iteration from usage data</li>
+          </ul></div>
+        </div>
+        <div class="rm-col">
+          <div class="rm-qtr bg-dark">Q4 2026</div>
+          <div class="rm-body"><ul>
+            <li>Pilot results &amp; board report</li>
+            <li>Corporate clients 2–5 onboarding</li>
+            <li>OJK reporting framework live</li>
+            <li>Phase 2 planning &amp; budgeting</li>
+          </ul></div>
+        </div>
+        <div class="rm-col">
+          <div class="rm-qtr bg-dark">Q1 2027</div>
+          <div class="rm-body"><ul>
+            <li>Scale: 5 clients · 10,000 employees</li>
+            <li>BNPL &amp; travel insurance providers</li>
+            <li>Samsung EPP national rollout</li>
+            <li>PaaS offering for MUFG clients</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- S31  NEXT STEPS -->
+<section class="slide">
+  <div class="chrome-header">
+    <div><div style="font-size:clamp(12px,1.8vw,22px);font-weight:700;color:#fff">Immediate Next Steps — Action Plan</div></div>
+    <div class="mufg-badge">MUFG</div>
+  </div>
+  <div class="body">
+    <div class="side-rule"></div>
+    <div style="padding:.8em 1em .5em;flex:1;display:flex">
+      <div class="ns-grid" style="flex:1">
+        <div class="ns-card">
+          <div class="ns-num">01</div>
+          <div class="ns-body">
+            <div class="ns-title">Executive Alignment</div>
+            <div class="ns-list"><ul>
+              <li>Present proposal to MUFG Indonesia CEO &amp; COO</li>
+              <li>Align Digital Banking and Retail divisions on ownership</li>
+              <li>Confirm FY2026 budget envelope</li>
+              <li>Appoint internal Product Owner</li>
+            </ul></div>
+            <div class="ns-deadline">Deadline: January 2026</div>
+          </div>
+        </div>
+        <div class="ns-card">
+          <div class="ns-num">02</div>
+          <div class="ns-body">
+            <div class="ns-title">Provider Letters of Intent</div>
+            <div class="ns-list"><ul>
+              <li>Issue LOI to Adira Finance</li>
+              <li>Issue LOI to Home Credit Indonesia</li>
+              <li>Issue LOI to Zurich Insurance Indonesia</li>
+              <li>Begin Samsung EPP commercial term negotiation</li>
+            </ul></div>
+            <div class="ns-deadline">Deadline: January–February 2026</div>
+          </div>
+        </div>
+        <div class="ns-card">
+          <div class="ns-num">03</div>
+          <div class="ns-body">
+            <div class="ns-title">Technical Discovery</div>
+            <div class="ns-list"><ul>
+              <li>HR payroll API specification review</li>
+              <li>Provider API documentation deep-dive</li>
+              <li>OJK POJK 6/2022 compliance gap assessment</li>
+              <li>Vendor RFP for platform development partner</li>
+            </ul></div>
+            <div class="ns-deadline">Deadline: February 2026</div>
+          </div>
+        </div>
+        <div class="ns-card">
+          <div class="ns-num">04</div>
+          <div class="ns-body">
+            <div class="ns-title">Board Approval</div>
+            <div class="ns-list"><ul>
+              <li>Full business case for board sign-off</li>
+              <li>Budget approval: IDR 10–12 Billion capex</li>
+              <li>Legal entity structure for platform ownership</li>
+              <li>Formal pilot agreement with MUFG Indonesia HR</li>
+            </ul></div>
+            <div class="ns-deadline">Deadline: March 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">CONFIDENTIAL · MUFG Employee Benefits Portal · Internal Proposal · April 2026</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+  CLOSING
+═══════════════════════════════════════════════════════════════════════ -->
+<section class="slide slide-closing">
+  <div style="display:flex;flex:1;flex-direction:column">
+    <div style="display:flex;flex:1">
+      <div class="closing-left"></div>
+      <div class="closing-body">
+        <div class="closing-line1">The Platform That Turns</div>
+        <div class="closing-line2">Payroll into Benefits.</div>
+        <div class="closing-rule"></div>
+        <div class="closing-providers">Adira Finance · Home Credit Indonesia · Zurich Insurance · Samsung EPP</div>
+        <div class="closing-meta">
+          Powered by <strong style="color:#fff">MUFG Bank Ltd.</strong><br>
+          <em style="color:var(--mgrey)">Market data sourced from: B2B2C Employee Benefits Portal Global Market Review, April 2026</em>
+        </div>
+      </div>
+    </div>
+    <div class="closing-bottom">
+      <strong>CONFIDENTIAL · For internal discussion only · © 2026 MUFG Bank Ltd.</strong><br>
+      Strategy &amp; Digital Banking Division · MUFG Indonesia
+    </div>
+  </div>
+  <div class="badge-tr">MUFG</div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<div id="nav">
+  <button id="btn-prev" onclick="go(-1)">◀ Prev</button>
+  <span id="slide-counter">1 / 1</span>
+  <button id="btn-next" onclick="go(1)">Next ▶</button>
+  <button onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('slide-counter');
+  const progress = document.getElementById('progress');
+  const btnP = document.getElementById('btn-prev');
+  const btnN = document.getElementById('btn-next');
+  let cur = 0;
+
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(slides.length - 1, n));
+    slides[cur].classList.add('active');
+    counter.textContent = `${cur + 1} / ${slides.length}`;
+    progress.style.width = `${((cur + 1) / slides.length) * 100}%`;
+    btnP.disabled = cur === 0;
+    btnN.disabled = cur === slides.length - 1;
+  }
+
+  function go(dir) { show(cur + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); go(-1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End')  show(slides.length - 1);
+    if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+  });
+
+  // Touch / swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+  }, {passive:true});
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+    else document.exitFullscreen();
+  }
+
+  show(0);
+</script>
+</body>
+</html>

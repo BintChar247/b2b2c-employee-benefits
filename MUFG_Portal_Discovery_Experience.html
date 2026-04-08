@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyBenefit MUFG — Discover</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --red: #e63946; --red-dark: #c0392b; --orange: #DA7756;
+  --blue: #5E9EFF; --green: #34C759; --purple: #BF5AF2;
+  --yellow: #FFD60A; --teal: #32ADE6;
+  --bg: #0f0f0f; --bg2: #161616; --bg3: #1e1e1e;
+  --text: #f5f5f7; --muted: #86868b; --border: rgba(255,255,255,0.08);
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+/* ── APP SHELL ── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; padding: 0;
+}
+.sidebar-header { padding: 20px 18px 16px; border-bottom: 1px solid var(--border); }
+.app-logo { display: flex; align-items: center; gap: 9px; margin-bottom: 12px; }
+.app-logo-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--red-dark), var(--red));
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.app-logo-text { font-size: 14px; font-weight: 700; }
+.app-logo-text span { color: var(--red); }
+
+.user-chip {
+  background: var(--bg3); border-radius: 10px; padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, #e63946, #DA7756);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.user-name { font-size: 12px; font-weight: 700; }
+.user-role { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+.sidebar-section { padding: 12px 14px 6px; font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px; font-size: 13px; cursor: pointer;
+  border-radius: 0; transition: background 0.15s; color: var(--muted);
+}
+.sidebar-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.sidebar-item.active { color: var(--red); background: rgba(230,57,70,0.08); font-weight: 600; }
+.sidebar-item .si-icon { font-size: 15px; width: 20px; text-align: center; }
+.sidebar-item .si-badge {
+  margin-left: auto; background: var(--red); color: #fff;
+  font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 10px;
+}
+
+.sidebar-credits {
+  margin: auto 14px 14px; background: linear-gradient(135deg, rgba(230,57,70,0.15), rgba(218,119,86,0.08));
+  border: 1px solid rgba(230,57,70,0.25); border-radius: 12px; padding: 14px;
+}
+.sc-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+.sc-amount { font-size: 20px; font-weight: 700; color: #fff; }
+.sc-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.sc-bar-bg { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 10px; }
+.sc-bar { height: 4px; background: linear-gradient(90deg, var(--red), var(--orange)); border-radius: 2px; width: 40%; }
+
+/* MAIN AREA */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOP BAR */
+.topbar {
+  padding: 14px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+  background: var(--bg2);
+}
+.search-wrap { flex: 1; position: relative; max-width: 480px; }
+.search-input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 9px 14px 9px 36px;
+  font-size: 13px; color: var(--text); font-family: var(--font); outline: none;
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: rgba(230,57,70,0.5); }
+.search-input::placeholder { color: var(--muted); }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.topbar-chip {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+  padding: 7px 12px; font-size: 12px; cursor: pointer; transition: all 0.15s;
+}
+.topbar-chip:hover { border-color: rgba(255,255,255,0.2); }
+.bpjs-chip { border-color: rgba(52,199,89,0.35); color: var(--green); }
+.notif-btn {
+  width: 34px; height: 34px; border-radius: 8px; background: var(--bg3);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer; position: relative;
+}
+.notif-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+
+/* CATEGORY TABS */
+.cat-tabs {
+  display: flex; gap: 6px; padding: 12px 24px;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+  overflow-x: auto; scrollbar-width: none; background: var(--bg2);
+}
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+  flex-shrink: 0; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border); color: var(--muted); white-space: nowrap;
+  transition: all 0.18s;
+}
+.cat-tab:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+.cat-tab.active { color: #fff; border-color: transparent; }
+
+/* SCROLL AREA */
+.content { flex: 1; overflow-y: auto; padding: 20px 24px 32px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* AI PICKS STRIP */
+.ai-strip {
+  background: linear-gradient(135deg, rgba(230,57,70,0.1), rgba(94,158,255,0.06));
+  border: 1px solid rgba(230,57,70,0.2); border-radius: 14px;
+  padding: 14px 18px; margin-bottom: 24px; display: flex; align-items: center; gap: 14px;
+}
+.ai-icon { font-size: 24px; flex-shrink: 0; }
+.ai-text .at-label { font-size: 11px; font-weight: 700; color: var(--red); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+.ai-text .at-body { font-size: 13px; color: var(--muted); }
+.ai-text .at-body strong { color: var(--text); }
+.ai-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.ai-pill {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.ai-pill:hover { background: rgba(230,57,70,0.15); border-color: rgba(230,57,70,0.4); color: var(--red); }
+
+/* SECTION HEADER */
+.section-hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.section-hdr h3 { font-size: 15px; font-weight: 700; }
+.section-hdr a { font-size: 12px; color: var(--red); cursor: pointer; }
+
+/* FEATURED CAROUSEL */
+.featured-row { display: flex; gap: 14px; margin-bottom: 28px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+.featured-row::-webkit-scrollbar { display: none; }
+.feat-card {
+  flex-shrink: 0; width: 220px; border-radius: 16px; overflow: hidden;
+  cursor: pointer; transition: transform 0.2s; position: relative;
+}
+.feat-card:hover { transform: translateY(-3px); }
+.feat-card .fc-bg {
+  height: 110px; display: flex; align-items: center; justify-content: center;
+  font-size: 52px; position: relative;
+}
+.feat-card .fc-badge {
+  position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.feat-card .fc-body { padding: 12px; background: var(--bg3); }
+.feat-card .fc-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.feat-card .fc-sub { font-size: 11px; color: var(--muted); }
+.feat-card .fc-rate { font-size: 12px; font-weight: 700; margin-top: 6px; }
+.feat-card .fc-entity { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* PRODUCT GRID */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px; margin-bottom: 28px;
+}
+.prod-card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 14px;
+  padding: 14px; cursor: pointer; transition: all 0.18s; position: relative;
+}
+.prod-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.15); background: #222; }
+.prod-card .pc-icon { font-size: 30px; margin-bottom: 10px; }
+.prod-card .pc-name { font-size: 12px; font-weight: 700; margin-bottom: 3px; line-height: 1.3; }
+.prod-card .pc-brand { font-size: 10px; color: var(--muted); margin-bottom: 6px; }
+.prod-card .pc-price { font-size: 13px; font-weight: 700; }
+.prod-card .pc-term { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.prod-card .pc-entity {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.prod-card .pc-tag {
+  display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 6px;
+}
+.prod-card.new::after {
+  content: 'BARU'; position: absolute; top: -1px; left: 12px;
+  font-size: 8px; font-weight: 700; background: var(--yellow); color: #000;
+  padding: 2px 6px; border-radius: 0 0 6px 6px;
+}
+
+/* RIGHT PANEL */
+.right-panel {
+  width: 240px; flex-shrink: 0; background: var(--bg2);
+  border-left: 1px solid var(--border); padding: 16px;
+  overflow-y: auto;
+}
+.rp-section { margin-bottom: 20px; }
+.rp-label { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+.rp-stat { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.rp-stat:last-child { border-bottom: none; }
+.rp-stat .rs-label { font-size: 12px; color: var(--muted); }
+.rp-stat .rs-val { font-size: 13px; font-weight: 700; }
+
+.recently-viewed { display: flex; flex-direction: column; gap: 8px; }
+.rv-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px;
+  background: var(--bg3); border-radius: 8px; cursor: pointer;
+}
+.rv-item:hover { background: #222; }
+.rv-item .rvi-icon { font-size: 20px; flex-shrink: 0; }
+.rv-item .rvi-name { font-size: 11px; font-weight: 600; }
+.rv-item .rvi-price { font-size: 10px; color: var(--muted); }
+
+.promo-card {
+  background: linear-gradient(135deg, rgba(191,90,242,0.15), rgba(94,158,255,0.08));
+  border: 1px solid rgba(191,90,242,0.25); border-radius: 12px; padding: 14px;
+}
+.promo-card .pc2-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.promo-card .pc2-body { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.promo-card .pc2-cta {
+  margin-top: 10px; display: block; text-align: center;
+  background: var(--purple); color: #fff; border-radius: 8px;
+  padding: 7px; font-size: 11px; font-weight: 700; cursor: pointer;
+}
+
+/* STATUS BAR SIMULATION */
+.status-bar { height: 24px; background: #000; display: none; }
+
+/* ENTITY COLOR MAP */
+.e-adira   { background: rgba(218,119,86,0.15); color: var(--orange); border: 1px solid rgba(218,119,86,0.3); }
+.e-hc      { background: rgba(191,90,242,0.12); color: var(--purple); border: 1px solid rgba(191,90,242,0.25); }
+.e-zurich  { background: rgba(52,199,89,0.12); color: var(--green); border: 1px solid rgba(52,199,89,0.25); }
+.e-danamon { background: rgba(94,158,255,0.12); color: var(--blue); border: 1px solid rgba(94,158,255,0.25); }
+.e-mufg    { background: rgba(230,57,70,0.12); color: var(--red); border: 1px solid rgba(230,57,70,0.25); }
+.e-partner { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid rgba(255,255,255,0.1); }
+
+/* TAG COLORS */
+.t-promo  { background: rgba(255,69,58,0.15); color: #FF453A; }
+.t-0pct   { background: rgba(52,199,89,0.15); color: var(--green); }
+.t-pop    { background: rgba(255,214,10,0.15); color: var(--yellow); }
+.t-new    { background: rgba(94,158,255,0.15); color: var(--blue); }
+.t-excl   { background: rgba(218,119,86,0.15); color: var(--orange); }
+
+/* FILTER ROW */
+.filter-row { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+.filter-chip {
+  padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  border: 1px solid var(--border); color: var(--muted); cursor: pointer; transition: all 0.15s;
+}
+.filter-chip:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+.filter-chip.on { background: rgba(230,57,70,0.12); border-color: rgba(230,57,70,0.4); color: var(--red); }
+.filter-count { font-size: 11px; color: var(--muted); margin-left: auto; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="app-logo">
+        <div class="app-logo-icon">💳</div>
+        <div class="app-logo-text">My<span>Benefit</span></div>
+      </div>
+      <div class="user-chip">
+        <div class="user-avatar">BS</div>
+        <div>
+          <div class="user-name">Budi Santoso</div>
+          <div class="user-role">Bank Danamon · Staff Lv.3</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">Menu</div>
+    <div class="sidebar-item active"><span class="si-icon">🏠</span> Beranda</div>
+    <div class="sidebar-item"><span class="si-icon">🔍</span> Jelajahi <span class="si-badge">54</span></div>
+    <div class="sidebar-item"><span class="si-icon">📋</span> Pengajuan Saya</div>
+    <div class="sidebar-item"><span class="si-icon">🛡️</span> Asuransi Aktif</div>
+    <div class="sidebar-item"><span class="si-icon">💳</span> Cicilan Berjalan</div>
+    <div class="sidebar-item"><span class="si-icon">📊</span> Financial Health</div>
+
+    <div class="sidebar-section">Entitas MUFG</div>
+    <div class="sidebar-item"><span class="si-icon">🏦</span> Bank Danamon</div>
+    <div class="sidebar-item"><span class="si-icon">🏍️</span> Adira Finance</div>
+    <div class="sidebar-item"><span class="si-icon">📱</span> Home Credit</div>
+    <div class="sidebar-item"><span class="si-icon">🛡️</span> Zurich Indonesia</div>
+
+    <div class="sidebar-credits">
+      <div class="sc-label">Benefit Credits Tersedia</div>
+      <div class="sc-amount">Rp 2.400.000</div>
+      <div class="sc-sub">Dari total Rp 6.000.000 / tahun</div>
+      <div class="sc-bar-bg"><div class="sc-bar"></div></div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" type="text" placeholder="Cari produk, merek, atau kategori…">
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-chip bpjs-chip">✓ BPJS Aktif</div>
+        <div class="topbar-chip">🎯 Pre-Approved: 3 produk</div>
+        <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+      </div>
+    </div>
+
+    <!-- CATEGORY TABS -->
+    <div class="cat-tabs">
+      <div class="cat-tab active" style="background:var(--red); border-color:var(--red);">✨ Semua (54)</div>
+      <div class="cat-tab" style="--c:var(--orange)">🏍️ Motor &amp; Mobil (10)</div>
+      <div class="cat-tab">📱 Elektronik (8)</div>
+      <div class="cat-tab">🏠 Perabot Rumah (8)</div>
+      <div class="cat-tab">🛡️ Kesehatan (8)</div>
+      <div class="cat-tab">🏦 Tabungan &amp; Investasi (6)</div>
+      <div class="cat-tab">✈️ Lifestyle &amp; Travel (6)</div>
+      <div class="cat-tab">🎓 Pendidikan (5)</div>
+      <div class="cat-tab">🍽️ F&amp;B &amp; Voucher (3)</div>
+    </div>
+
+    <!-- SCROLLABLE CONTENT -->
+    <div class="content">
+
+      <!-- AI PICKS -->
+      <div class="ai-strip">
+        <div class="ai-icon">✨</div>
+        <div style="flex:1;">
+          <div class="ai-text">
+            <div class="at-label">Rekomendasi AI untuk Anda</div>
+            <div class="at-body">Berdasarkan profil Anda — <strong>Lv.3, keluarga 3 orang, gaji Rp 8.5jt, cicilan aktif 0</strong> — ini yang paling relevan minggu ini:</div>
+          </div>
+          <div class="ai-pills">
+            <div class="ai-pill">🏍️ Motor 0% DP</div>
+            <div class="ai-pill">🛡️ Proteksi Keluarga</div>
+            <div class="ai-pill">🎓 Pendidikan Anak</div>
+            <div class="ai-pill">❄️ AC Rumah</div>
+            <div class="ai-pill">📱 HP Baru</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEATURED DEALS -->
+      <div class="section-hdr">
+        <h3>🔥 Deal Eksklusif Karyawan MUFG</h3>
+        <a>Lihat semua →</a>
+      </div>
+      <div class="featured-row">
+        <div class="feat-card">
+          <div class="fc-bg" style="background:linear-gradient(135deg,rgba(218,119,86,0.3),rgba(218,119,86,0.08));">
+            🏍️
+            <div class="fc-badge" style="background:var(--green);color:#fff;">0% DP</div>
+          </div>
+          <div class="fc-body">
+            <div class="fc-title">Honda Vario 125</div>
+            <div class="fc-sub">Eksklusif karyawan MUFG</div>
+            <div class="fc-rate" style="color:var(--orange);">0% bunga · 12 bulan</div>
+            <div class="fc-entity">via Adira Finance</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="fc-bg" style="background:linear-gradient(135deg,rgba(191,90,242,0.25),rgba(191,90,242,0.06));">
+            📱
+            <div class="fc-badge" style="background:var(--red);color:#fff;">DISKON 20%</div>
+          </div>
+          <div class="fc-body">
+            <div class="fc-title">Samsung Galaxy A55</div>
+            <div class="fc-sub">Pre-approved untuk Anda ✓</div>
+            <div class="fc-rate" style="color:var(--purple);">Rp 4.319.200 (hemat Rp 1jt)</div>
+            <div class="fc-entity">via Home Credit</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="fc-bg" style="background:linear-gradient(135deg,rgba(52,199,89,0.2),rgba(52,199,89,0.05));">
+            🛡️
+            <div class="fc-badge" style="background:var(--blue);color:#fff;">REKOMENDASI AI</div>
+          </div>
+          <div class="fc-body">
+            <div class="fc-title">Zurich Silver Keluarga</div>
+            <div class="fc-sub">Rawat inap + Halodoc</div>
+            <div class="fc-rate" style="color:var(--green);">Rp 95.000 / bulan</div>
+            <div class="fc-entity">via Zurich Indonesia</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="fc-bg" style="background:linear-gradient(135deg,rgba(94,158,255,0.2),rgba(94,158,255,0.05));">
+            ❄️
+            <div class="fc-badge" style="background:var(--yellow);color:#000;">TERLARIS</div>
+          </div>
+          <div class="fc-body">
+            <div class="fc-title">Daikin AC 1PK Split</div>
+            <div class="fc-sub">Gratis instalasi</div>
+            <div class="fc-rate" style="color:var(--blue);">0% · 18 bulan</div>
+            <div class="fc-entity">via Home Credit</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="fc-bg" style="background:linear-gradient(135deg,rgba(255,214,10,0.2),rgba(255,214,10,0.04));">
+            🏠
+            <div class="fc-badge" style="background:var(--orange);color:#fff;">BARU</div>
+          </div>
+          <div class="fc-body">
+            <div class="fc-title">KPR Danamon Staff</div>
+            <div class="fc-sub">DP 5% untuk karyawan</div>
+            <div class="fc-rate" style="color:var(--yellow);">Bunga 5.75% fixed 3th</div>
+            <div class="fc-entity">via Bank Danamon</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER ROW -->
+      <div class="filter-row">
+        <div class="filter-chip on">✓ Pre-Approved</div>
+        <div class="filter-chip">0% Bunga</div>
+        <div class="filter-chip">Diskon 20%+</div>
+        <div class="filter-chip">Adira Finance</div>
+        <div class="filter-chip">Home Credit</div>
+        <div class="filter-chip">Zurich</div>
+        <div class="filter-chip">Danamon</div>
+        <div class="filter-count">54 produk tersedia</div>
+      </div>
+
+      <!-- MOTOR & MOBIL -->
+      <div class="section-hdr"><h3>🏍️ Motor &amp; Mobil</h3><a>Lihat 10 →</a></div>
+      <div class="product-grid" style="grid-template-columns:repeat(5,1fr)">
+        <div class="prod-card">
+          <span class="pc-entity e-adira">Adira</span>
+          <div class="pc-icon">🏍️</div>
+          <div class="pc-name">Honda Vario 125</div>
+          <div class="pc-brand">Honda Motor</div>
+          <div class="pc-price" style="color:var(--orange);">0% bunga</div>
+          <div class="pc-term">12 bulan · 0% DP</div>
+          <span class="pc-tag t-0pct">0% bunga</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-adira">Adira</span>
+          <div class="pc-icon">🛵</div>
+          <div class="pc-name">Honda Beat Street</div>
+          <div class="pc-brand">Honda Motor</div>
+          <div class="pc-price" style="color:var(--orange);">Rp 890rb/bln</div>
+          <div class="pc-term">12 bulan · 0% DP</div>
+          <span class="pc-tag t-excl">Eksklusif</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-adira">Adira</span>
+          <div class="pc-icon">🏍️</div>
+          <div class="pc-name">Yamaha NMAX 155</div>
+          <div class="pc-brand">Yamaha Motor</div>
+          <div class="pc-price" style="color:var(--orange);">Rp 1.2jt/bln</div>
+          <div class="pc-term">24 bulan · DP 5%</div>
+          <span class="pc-tag t-pop">Terlaris</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-adira">Adira</span>
+          <div class="pc-icon">🛵</div>
+          <div class="pc-name">Honda Scoopy</div>
+          <div class="pc-brand">Honda Motor</div>
+          <div class="pc-price" style="color:var(--orange);">Rp 950rb/bln</div>
+          <div class="pc-term">12 bulan · 0% DP</div>
+          <span class="pc-tag t-0pct">0% bunga</span>
+        </div>
+        <div class="prod-card new">
+          <span class="pc-entity e-adira">Adira</span>
+          <div class="pc-icon">🚗</div>
+          <div class="pc-name">Daihatsu Sigra</div>
+          <div class="pc-brand">Daihatsu</div>
+          <div class="pc-price" style="color:var(--orange);">DP Rp 10jt</div>
+          <div class="pc-term">48 bulan · Rate 3.5%</div>
+          <span class="pc-tag t-new">Mobil Baru</span>
+        </div>
+      </div>
+
+      <!-- ELEKTRONIK -->
+      <div class="section-hdr"><h3>📱 Elektronik</h3><a>Lihat 8 →</a></div>
+      <div class="product-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="prod-card">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">📱</div>
+          <div class="pc-name">Samsung Galaxy A55</div>
+          <div class="pc-brand">Samsung · Diskon 20%</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 4.319.200</div>
+          <div class="pc-term">Pre-approved ✓ · 0%/12bln</div>
+          <span class="pc-tag t-promo">Pre-approved</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">📱</div>
+          <div class="pc-name">Xiaomi 14 Pro</div>
+          <div class="pc-brand">Xiaomi · Diskon 15%</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 7.999.000</div>
+          <div class="pc-term">0% bunga · 12 bulan</div>
+          <span class="pc-tag t-0pct">0% bunga</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">💻</div>
+          <div class="pc-name">ASUS VivoBook 15</div>
+          <div class="pc-brand">ASUS · Laptop</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 7.799.000</div>
+          <div class="pc-term">0% bunga · 18 bulan</div>
+          <span class="pc-tag t-pop">Populer</span>
+        </div>
+        <div class="prod-card new">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">🎧</div>
+          <div class="pc-name">AirPods Pro 2</div>
+          <div class="pc-brand">Apple</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 3.299.000</div>
+          <div class="pc-term">0% bunga · 6 bulan</div>
+          <span class="pc-tag t-new">Baru</span>
+        </div>
+      </div>
+
+      <!-- PERABOT RUMAH -->
+      <div class="section-hdr"><h3>🏠 Perabot &amp; Elektronik Rumah</h3><a>Lihat 8 →</a></div>
+      <div class="product-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="prod-card">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">🫧</div>
+          <div class="pc-name">LG Mesin Cuci 8kg</div>
+          <div class="pc-brand">LG Electronics</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 499rb/bln</div>
+          <div class="pc-term">18 bulan · 0% DP</div>
+          <span class="pc-tag t-0pct">0% bunga</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">❄️</div>
+          <div class="pc-name">Daikin AC 1PK</div>
+          <div class="pc-brand">Daikin · Gratis Pasang</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 599rb/bln</div>
+          <div class="pc-term">18 bulan · 0% DP</div>
+          <span class="pc-tag t-pop">Terlaris</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">📺</div>
+          <div class="pc-name">Samsung TV 55" QLED</div>
+          <div class="pc-brand">Samsung</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 849rb/bln</div>
+          <div class="pc-term">24 bulan · DP 10%</div>
+          <span class="pc-tag t-excl">Eksklusif</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-hc">Home Credit</span>
+          <div class="pc-icon">🍳</div>
+          <div class="pc-name">Philips Air Fryer XL</div>
+          <div class="pc-brand">Philips</div>
+          <div class="pc-price" style="color:var(--purple);">Rp 1.999.000</div>
+          <div class="pc-term">0% bunga · 6 bulan</div>
+          <span class="pc-tag t-new">Baru</span>
+        </div>
+      </div>
+
+      <!-- KESEHATAN -->
+      <div class="section-hdr"><h3>🛡️ Kesehatan &amp; Perlindungan</h3><a>Lihat 8 →</a></div>
+      <div class="product-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="prod-card">
+          <span class="pc-entity e-zurich">Zurich</span>
+          <div class="pc-icon">🛡️</div>
+          <div class="pc-name">Zurich Silver Keluarga</div>
+          <div class="pc-brand">Rawat inap + Telemedicine</div>
+          <div class="pc-price" style="color:var(--green);">Rp 95.000/bln</div>
+          <div class="pc-term">Rekomendasi AI untuk Anda</div>
+          <span class="pc-tag t-pop">Terpopuler</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-zurich">Zurich</span>
+          <div class="pc-icon">🏅</div>
+          <div class="pc-name">Zurich Gold Keluarga</div>
+          <div class="pc-brand">Premium · ICU + Kacamata</div>
+          <div class="pc-price" style="color:var(--green);">Rp 175.000/bln</div>
+          <div class="pc-term">Perlindungan komprehensif</div>
+          <span class="pc-tag t-excl">Premium</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-zurich">Zurich</span>
+          <div class="pc-icon">🏍️</div>
+          <div class="pc-name">Asuransi Motor Zurich</div>
+          <div class="pc-brand">TLO + Kecelakaan</div>
+          <div class="pc-price" style="color:var(--green);">Rp 28.000/bln</div>
+          <div class="pc-term">Klaim via app dalam 24 jam</div>
+          <span class="pc-tag t-0pct">Bundle Motor</span>
+        </div>
+        <div class="prod-card new">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">👨‍⚕️</div>
+          <div class="pc-name">Halodoc Premium</div>
+          <div class="pc-brand">Telemedicine 24/7</div>
+          <div class="pc-price" style="color:var(--teal);">Rp 49.000/bln</div>
+          <div class="pc-term">Dokter umum + spesialis</div>
+          <span class="pc-tag t-new">Baru</span>
+        </div>
+      </div>
+
+      <!-- TABUNGAN & INVESTASI -->
+      <div class="section-hdr"><h3>🏦 Tabungan &amp; Investasi</h3><a>Lihat 6 →</a></div>
+      <div class="product-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="prod-card">
+          <span class="pc-entity e-danamon">Danamon</span>
+          <div class="pc-icon">🏦</div>
+          <div class="pc-name">Tabungan Gajiku Plus</div>
+          <div class="pc-brand">+0.5% bunga untuk karyawan aktif</div>
+          <div class="pc-price" style="color:var(--blue);">Bunga 4.5% p.a.</div>
+          <div class="pc-term">Auto-save dari gaji</div>
+          <span class="pc-tag t-excl">Karyawan Only</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-danamon">Danamon</span>
+          <div class="pc-icon">📈</div>
+          <div class="pc-name">Reksa Dana Pasar Uang</div>
+          <div class="pc-brand">Modal Rp 100rb · Risiko rendah</div>
+          <div class="pc-price" style="color:var(--blue);">Est. 5.8% p.a.</div>
+          <div class="pc-term">Mulai dari Rp 100.000</div>
+          <span class="pc-tag t-new">Investasi</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-danamon">Danamon</span>
+          <div class="pc-icon">🏠</div>
+          <div class="pc-name">KPR Staff Danamon</div>
+          <div class="pc-brand">DP 5% · Fixed 3 tahun</div>
+          <div class="pc-price" style="color:var(--blue);">5.75% fixed</div>
+          <div class="pc-term">Cicilan dari Rp 2.1jt/bln</div>
+          <span class="pc-tag t-excl">Staff Rate</span>
+        </div>
+      </div>
+
+      <!-- LIFESTYLE & TRAVEL -->
+      <div class="section-hdr"><h3>✈️ Lifestyle, Travel &amp; Voucher</h3><a>Lihat 6 →</a></div>
+      <div class="product-grid" style="grid-template-columns:repeat(6,1fr)">
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">✈️</div>
+          <div class="pc-name">Traveloka Staff</div>
+          <div class="pc-brand">Diskon 20% hotel</div>
+          <div class="pc-price">Voucher Rp 500rb</div>
+          <div class="pc-term">Berlaku 3 bulan</div>
+          <span class="pc-tag t-excl">Eksklusif</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">🛒</div>
+          <div class="pc-name">Tokopedia Plus</div>
+          <div class="pc-brand">Cashback 15% tiap beli</div>
+          <div class="pc-price">Gratis 1 bulan</div>
+          <div class="pc-term">Langganan Rp 39rb/bln</div>
+          <span class="pc-tag t-promo">Cashback</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">🎬</div>
+          <div class="pc-name">Netflix Premium</div>
+          <div class="pc-brand">Potong gaji otomatis</div>
+          <div class="pc-price">Rp 54.000/bln</div>
+          <div class="pc-term">Hemat Rp 15rb vs retail</div>
+          <span class="pc-tag t-pop">Populer</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">🎵</div>
+          <div class="pc-name">Spotify Premium</div>
+          <div class="pc-brand">Keluarga hingga 6 akun</div>
+          <div class="pc-price">Rp 23.000/bln</div>
+          <div class="pc-term">Diskon 30% staff</div>
+          <span class="pc-tag t-excl">Staff Disc.</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">🚗</div>
+          <div class="pc-name">Grab Subs. Unlimited</div>
+          <div class="pc-brand">Commuter benefit</div>
+          <div class="pc-price">Rp 79.000/bln</div>
+          <div class="pc-term">Hemat Rp 30rb/bln</div>
+          <span class="pc-tag t-new">Transport</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">🏋️</div>
+          <div class="pc-name">Gym Membership</div>
+          <div class="pc-brand">FitHub / Fitness First</div>
+          <div class="pc-price">Rp 199.000/bln</div>
+          <div class="pc-term">Akses 50+ outlet Jakarta</div>
+          <span class="pc-tag t-pop">Wellness</span>
+        </div>
+      </div>
+
+      <!-- PENDIDIKAN -->
+      <div class="section-hdr"><h3>🎓 Pendidikan &amp; Pengembangan</h3><a>Lihat 5 →</a></div>
+      <div class="product-grid" style="grid-template-columns:repeat(5,1fr)">
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">📖</div>
+          <div class="pc-name">Ruangguru Premium</div>
+          <div class="pc-brand">SD–SMA lengkap</div>
+          <div class="pc-price">Rp 49.000/bln</div>
+          <div class="pc-term">Diskon 50% staff</div>
+          <span class="pc-tag t-promo">Anak Sekolah</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">🌐</div>
+          <div class="pc-name">Kursus B. Inggris</div>
+          <div class="pc-brand">EF Adult Program</div>
+          <div class="pc-price">Rp 499.000/bln</div>
+          <div class="pc-term">Online + weekend class</div>
+          <span class="pc-tag t-pop">Career</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-partner">Partner</span>
+          <div class="pc-icon">💻</div>
+          <div class="pc-name">Coursera Plus</div>
+          <div class="pc-brand">1.000+ kursus global</div>
+          <div class="pc-price">Rp 149.000/bln</div>
+          <div class="pc-term">Diskon 40% staff rate</div>
+          <span class="pc-tag t-new">Upskilling</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-mufg">MUFG</span>
+          <div class="pc-icon">🎓</div>
+          <div class="pc-name">Beasiswa S2</div>
+          <div class="pc-brand">Program MUFG internal</div>
+          <div class="pc-price">Hingga Rp 50jt/th</div>
+          <div class="pc-term">Persyaratan: Lv.4+</div>
+          <span class="pc-tag t-excl">MUFG Group</span>
+        </div>
+        <div class="prod-card">
+          <span class="pc-entity e-danamon">Danamon</span>
+          <div class="pc-icon">💰</div>
+          <div class="pc-name">KTA Pendidikan</div>
+          <div class="pc-brand">Cicilan ringan + bunga rendah</div>
+          <div class="pc-price" style="color:var(--blue);">Bunga 0.8%/bln</div>
+          <div class="pc-term">Hingga Rp 50jt · 36 bln</div>
+          <span class="pc-tag t-0pct">Staff Rate</span>
+        </div>
+      </div>
+
+      <!-- COMPLIANCE STRIP -->
+      <div style="background:rgba(255,214,10,0.07); border:1px solid rgba(255,214,10,0.2); border-radius:14px; padding:16px 20px; display:flex; align-items:center; gap:16px;">
+        <div style="font-size:28px;">📋</div>
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Wajib — BPJS &amp; Tunjangan Statutory</div>
+          <div style="font-size:12px; color:var(--muted);">BPJS Kesehatan, BPJS Ketenagakerjaan, THR, dan PPh21 dikelola otomatis. Semua terlihat di satu tempat. Status: <span style="color:var(--green); font-weight:700;">Aktif &amp; Up to Date ✓</span></div>
+        </div>
+        <div style="text-align:right; flex-shrink:0;">
+          <div style="font-size:11px; color:var(--muted);">Iuran BPJS bulan ini</div>
+          <div style="font-size:16px; font-weight:700; color:var(--yellow);">Rp 312.500</div>
+          <div style="font-size:10px; color:var(--green);">✓ Potong gaji otomatis</div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right-panel">
+    <div class="rp-section">
+      <div class="rp-label">Profil Finansial Anda</div>
+      <div class="rp-stat"><span class="rs-label">Cicilan aktif</span><span class="rs-val" style="color:var(--green);">0 aktif</span></div>
+      <div class="rp-stat"><span class="rs-label">Limit tersedia</span><span class="rs-val" style="color:var(--blue);">Rp 25jt</span></div>
+      <div class="rp-stat"><span class="rs-label">Skor kredit</span><span class="rs-val" style="color:var(--green);">BAIK ●</span></div>
+      <div class="rp-stat"><span class="rs-label">Produk aktif</span><span class="rs-val">2 produk</span></div>
+      <div class="rp-stat"><span class="rs-label">Masa kerja</span><span class="rs-val">4 th 2 bln</span></div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">Baru Dilihat</div>
+      <div class="recently-viewed">
+        <div class="rv-item"><div class="rvi-icon">🏍️</div><div><div class="rvi-name">Honda PCX 160</div><div class="rvi-price">Rp 1.45jt/bln via Adira</div></div></div>
+        <div class="rv-item"><div class="rvi-icon">❄️</div><div><div class="rvi-name">Sharp AC 1.5PK</div><div class="rvi-price">Rp 699rb/bln via HC</div></div></div>
+        <div class="rv-item"><div class="rvi-icon">📱</div><div><div class="rvi-name">OPPO Reno 11</div><div class="rvi-price">Rp 5.299.000 via HC</div></div></div>
+        <div class="rv-item"><div class="rvi-icon">🛡️</div><div><div class="rvi-name">Zurich Gold Family</div><div class="rvi-price">Rp 175.000/bln</div></div></div>
+      </div>
+    </div>
+
+    <div class="rp-section">
+      <div class="rp-label">Teman Anda Ambil Ini</div>
+      <div style="background:var(--bg3); border-radius:10px; padding:12px; font-size:12px; color:var(--muted); line-height:1.6;">
+        <div style="font-weight:700; color:var(--text); margin-bottom:6px;">🔥 Trending di Danamon</div>
+        3 rekan Anda bulan ini ambil <strong style="color:var(--orange);">Honda Vario 0%</strong>, 5 orang aktifkan <strong style="color:var(--green);">Zurich Silver</strong>.
+      </div>
+    </div>
+
+    <div class="promo-card">
+      <div class="pc2-title">💡 Tahukah Anda?</div>
+      <div class="pc2-body">Karyawan yang pakai <strong>3+ produk MUFG</strong> mendapat bunga tabungan Danamon 0.5% lebih tinggi dan priority service di semua cabang.</div>
+      <div class="pc2-cta">Lihat manfaat loyalty →</div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+</body>
+</html>

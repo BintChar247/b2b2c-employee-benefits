@@ -3,8 +3,37 @@
  * Workflow: 04_emi_simulator
  */
 
-import { state, navigate, goBack, esc } from './app.js'
+import { supabase, state, navigate, goBack, esc } from './app.js'
 import { formatIDRFull, formatIDRAbbr } from './offers.js'
+
+// ============================================================
+// Analytics (mirrors checkout.js)
+// ============================================================
+function logRedirectEvent(offer) {
+  if (!supabase) return
+  const session = state.session || {}
+  supabase
+    .from('redirect_events')
+    .insert({
+      offer_id:      offer.id,
+      provider_id:   offer.providers?.id || offer.provider_id || null,
+      employee_code: session.code || null,
+    })
+    .then(() => {})
+    .catch(() => {})
+}
+
+function buildRedirectUrl(offer) {
+  const base =
+    offer.checkout_url ||
+    offer.providers?.website_url ||
+    'https://www.adira.co.id'
+  const url = new URL(base)
+  url.searchParams.set('utm_source',   'b2b2c_portal')
+  url.searchParams.set('utm_medium',   'employee_app')
+  url.searchParams.set('utm_campaign', 'EMP_BENEFITS_2026')
+  return url.toString()
+}
 
 // ============================================================
 // EMI calculation
@@ -245,12 +274,15 @@ export function renderSimulator(el, offer) {
         ${renderAmortTable(P, r, sim.tenor, emi)}
       </div>
 
-      <!-- CTA: go to detail if offer provided -->
+      <!-- CTA: open provider directly (native <a> so mobile never blocks) -->
       ${offer ? `
         <div style="padding:0 14px 14px;">
-          <button class="btn-primary" id="sim-to-detail">
+          <a class="btn-primary sim-cta-link" id="sim-to-provider"
+             href="${esc(buildRedirectUrl(offer))}"
+             target="_blank"
+             rel="noopener noreferrer">
             Ajukan di ${esc(offer.providers?.name || 'Provider')} →
-          </button>
+          </a>
         </div>
       ` : ''}
 
@@ -375,9 +407,9 @@ function attachSimListeners(el, offer, c) {
     }
   })
 
-  // CTA to detail
-  el.querySelector('#sim-to-detail')?.addEventListener('click', () => {
-    if (offer) navigate('detail', { offer })
+  // CTA: log analytics when native <a> is tapped (non-blocking)
+  el.querySelector('#sim-to-provider')?.addEventListener('click', () => {
+    if (offer) logRedirectEvent(offer)
   })
 }
 

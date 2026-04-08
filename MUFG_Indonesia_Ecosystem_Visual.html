@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUFG Indonesia — Financial Wellness Ecosystem</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --text: #f5f5f7;
+  --muted: #86868b;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --red: #E60012;
+  --orange: #DA7756;
+  --blue: #5E9EFF;
+  --green: #34C759;
+  --purple: #BF5AF2;
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 60px 40px 40px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(230,0,18,0.1) 0%, transparent 65%);
+  border-bottom: 1px solid var(--border);
+}
+header .eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--red); margin-bottom: 14px;
+}
+header h1 { font-size: clamp(28px, 4vw, 52px); font-weight: 700; line-height: 1.1; }
+header h1 strong { color: var(--red); }
+header p { font-size: 17px; color: var(--muted); margin-top: 14px; max-width: 640px; margin-inline: auto; line-height: 1.6; }
+
+/* ── STAT BAR ── */
+.stat-bar {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border); border-top: 1px solid var(--border);
+  background: rgba(230,0,18,0.03);
+}
+.stat-bar-item {
+  flex: 1; padding: 24px 20px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-bar-item:last-child { border-right: none; }
+.stat-bar-item .sbi-num { font-size: clamp(26px, 3vw, 42px); font-weight: 700; line-height: 1; }
+.stat-bar-item .sbi-label { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+
+/* ── SECTION ── */
+section { padding: 60px 40px; max-width: 1200px; margin: 0 auto; }
+section + section { padding-top: 0; }
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.section-title { font-size: clamp(22px, 2.8vw, 36px); font-weight: 700; margin-bottom: 8px; line-height: 1.2; }
+.section-sub { font-size: 15px; color: var(--muted); max-width: 700px; line-height: 1.65; margin-bottom: 36px; }
+
+/* ── ECOSYSTEM HUB DIAGRAM ── */
+.ecosystem-wrap {
+  position: relative;
+  width: 100%;
+  height: 620px;
+  user-select: none;
+}
+
+.eco-svg-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: visible;
+}
+
+.eco-svg-lines {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: visible;
+}
+
+/* Hub */
+.hub {
+  position: absolute;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(230,0,18,0.28), rgba(230,0,18,0.08));
+  border: 2px solid rgba(230,0,18,0.55);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 12px;
+  box-shadow: 0 0 40px rgba(230,0,18,0.18), 0 0 80px rgba(230,0,18,0.07);
+  animation: pulse 3s ease-in-out infinite;
+  z-index: 20;
+  transform: translate(-50%, -50%);
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 40px rgba(230,0,18,0.18), 0 0 80px rgba(230,0,18,0.07); }
+  50% { box-shadow: 0 0 60px rgba(230,0,18,0.30), 0 0 110px rgba(230,0,18,0.13); }
+}
+.hub-icon { font-size: 26px; margin-bottom: 5px; }
+.hub-label { font-size: 12px; font-weight: 700; color: #fff; line-height: 1.25; }
+.hub-sub { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 3px; }
+
+/* Inner eco nodes */
+.eco-node {
+  position: absolute;
+  width: 140px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 13px 14px; text-align: center;
+  cursor: pointer; transition: all 0.22s ease;
+  z-index: 15;
+  transform: translate(-50%, -50%);
+}
+.eco-node:hover {
+  transform: translate(-50%, -50%) scale(1.07);
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.08);
+}
+.en-icon { font-size: 22px; margin-bottom: 6px; }
+.en-title { font-size: 12.5px; font-weight: 700; color: #fff; margin-bottom: 3px; line-height: 1.2; }
+.en-role { font-size: 10.5px; color: var(--muted); line-height: 1.35; }
+.en-badge {
+  display: inline-block; margin-top: 7px; font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 7px;
+  border-radius: 20px;
+}
+
+/* Outer corp nodes */
+.corp-node {
+  position: absolute;
+  width: 110px;
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: 10px; padding: 9px 10px; text-align: center;
+  font-size: 10.5px; color: var(--muted);
+  transition: all 0.18s;
+  z-index: 12;
+  transform: translate(-50%, -50%);
+  cursor: default;
+}
+.corp-node:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.corp-node strong { display: block; font-size: 11.5px; color: var(--text); margin-bottom: 2px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="eyebrow">MUFG Indonesia · Financial Wellness Ecosystem</div>
+  <h1>Five Players.<br>One Portal. The <strong>40% → 70%</strong> Journey.</h1>
+  <p>How Danamon, Home Credit Indonesia, Adira, Zurich, and MUFG Bank turn a captive employee base into a financial wellness flywheel — with corporate clients paying to reach the audience.</p>
+</header>
+
+<!-- STAT BAR -->
+<div class="stat-bar">
+  <div class="stat-bar-item">
+    <div class="sbi-num" style="color:var(--red);">40%</div>
+    <div class="sbi-label">Current OneMUFG product adoption rate</div>
+  </div>
+  <div class="stat-bar-item">
+    <div class="sbi-num" style="color:var(--orange);">60%</div>
+    <div class="sbi-label">Captive employees not yet using MUFG products</div>
+  </div>
+  <div class="stat-bar-item">
+    <div class="sbi-num" style="color:var(--blue);">5</div>
+    <div class="sbi-label">MUFG-affiliated entities in Indonesia</div>
+  </div>
+  <div class="stat-bar-item">
+    <div class="sbi-num" style="color:var(--green);">$6B</div>
+    <div class="sbi-label">Indonesia HR tech market (external prize)</div>
+  </div>
+</div>
+
+<!-- ECOSYSTEM DIAGRAM -->
+<section>
+  <div class="section-label" style="color:var(--red);">The Ecosystem</div>
+  <div class="section-title">The MUFG Indonesia <strong>Network of Players</strong></div>
+  <div class="section-sub">The inner ring is the MUFG group. The outer ring is where corporate clients plug in as a paid marketing channel, offering exclusive deals to a verified, salaried employee audience.</div>
+
+  <div class="ecosystem-wrap" id="eco-wrap">
+
+    <!-- Decorative ring SVG (background) -->
+    <svg class="eco-svg-bg" id="eco-bg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+
+    <!-- Dynamic connection lines SVG -->
+    <svg class="eco-svg-lines" id="eco-lines"></svg>
+
+    <!-- HUB -->
+    <div class="hub" id="eco-hub">
+      <div class="hub-icon">📲</div>
+      <div class="hub-label">Benefits Portal</div>
+      <div class="hub-sub">Financial Wellness Hub</div>
+    </div>
+
+    <!-- INNER RING NODES (5) -->
+    <div class="eco-node" id="node-danamon" style="border-color:rgba(94,158,255,0.4);">
+      <div class="en-icon">🏦</div>
+      <div class="en-title">Bank Danamon</div>
+      <div class="en-role">Salary accounts, loans, savings</div>
+      <span class="en-badge" style="background:rgba(94,158,255,0.12);color:var(--blue);">Banking</span>
+    </div>
+
+    <div class="eco-node" id="node-adira" style="border-color:rgba(218,119,86,0.4);">
+      <div class="en-icon">🏍️</div>
+      <div class="en-title">Adira Finance</div>
+      <div class="en-role">Motorcycle &amp; auto financing</div>
+      <span class="en-badge" style="background:rgba(218,119,86,0.12);color:var(--orange);">Auto &amp; Moto</span>
+    </div>
+
+    <div class="eco-node" id="node-hci" style="border-color:rgba(191,90,242,0.4);">
+      <div class="en-icon">📱</div>
+      <div class="en-title">Home Credit ID</div>
+      <div class="en-role">Electronics &amp; appliance loans</div>
+      <span class="en-badge" style="background:rgba(191,90,242,0.12);color:var(--purple);">Consumer Finance</span>
+    </div>
+
+    <div class="eco-node" id="node-zurich" style="border-color:rgba(52,199,89,0.4);">
+      <div class="en-icon">🛡️</div>
+      <div class="en-title">Zurich Indonesia</div>
+      <div class="en-role">Health, life &amp; accident insurance</div>
+      <span class="en-badge" style="background:rgba(52,199,89,0.12);color:var(--green);">Insurance</span>
+    </div>
+
+    <div class="eco-node" id="node-mufg" style="border-color:rgba(230,0,18,0.5);">
+      <div class="en-icon">🏛️</div>
+      <div class="en-title">MUFG Bank Jakarta</div>
+      <div class="en-role">Corporate anchor, FX, GCMS treasury</div>
+      <span class="en-badge" style="background:rgba(230,0,18,0.12);color:var(--red);">Orchestrator</span>
+    </div>
+
+    <!-- OUTER CORP NODES (4) -->
+    <div class="corp-node" id="corp-honda">
+      <strong>Honda / Yamaha</strong>
+      Special rates<br>via Adira
+    </div>
+
+    <div class="corp-node" id="corp-samsung">
+      <strong>Samsung / Xiaomi</strong>
+      Phone deals via<br>Home Credit
+    </div>
+
+    <div class="corp-node" id="corp-lg">
+      <strong>LG / Panasonic</strong>
+      Appliances via<br>Home Credit
+    </div>
+
+    <div class="corp-node" id="corp-halodoc">
+      <strong>Halodoc / Alodokter</strong>
+      Telemedicine<br>via Zurich
+    </div>
+
+  </div>
+
+  <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:4px;">
+    Inner ring: MUFG-affiliated entities · Outer ring: Corporate clients (marketing channel) · Center: Financial wellness portal
+  </p>
+</section>
+
+<!-- 3 EMPLOYEE JOURNEYS -->
+<section>
+  <div class="section-label" style="color:var(--orange);">How It Comes Alive</div>
+  <div class="section-title">Three Moments That Move the <strong>40% Needle</strong></div>
+  <div class="section-sub">Employees don't change financial behavior because of policy — they change because a benefit made their life tangibly better. These are the three entry points.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:12px;">
+    <!-- Journey 1 -->
+    <div style="background:var(--card);border:1px solid rgba(218,119,86,0.3);border-radius:20px;overflow:hidden;transition:transform 0.2s;" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+      <div style="padding:20px 22px 16px;border-bottom:1px solid var(--border);background:rgba(218,119,86,0.06);">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;color:var(--orange);">🏍️ Journey 1 · Adira Finance</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;line-height:1.25;">"I want a new motorcycle"</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px;">A Danamon branch employee needs reliable transport to work</div>
+      </div>
+      <div style="padding:18px 22px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Opens benefits portal → sees <strong style="color:var(--text);">Honda Vario exclusive offer</strong>: 0% interest for 12 months, only for OneMUFG employees</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;"><strong style="color:var(--text);">Salary-linked pre-approval</strong> via Adira — no branch visit. Payroll data already in the system</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Repayment auto-deducted from Danamon salary account each month. <strong style="color:var(--text);">Zero friction</strong></div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Employee now has <strong style="color:var(--text);">Adira loan + Danamon account</strong> — two MUFG products activated in one transaction</div></div>
+      </div>
+      <div style="padding:14px 22px;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--orange);">Adira Finance + Bank Danamon</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Revenue: financing spread + account activity fees · Honda pays placement fee for exclusive channel access</div>
+      </div>
+    </div>
+
+    <!-- Journey 2 -->
+    <div style="background:var(--card);border:1px solid rgba(191,90,242,0.3);border-radius:20px;overflow:hidden;transition:transform 0.2s;" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+      <div style="padding:20px 22px 16px;border-bottom:1px solid var(--border);background:rgba(191,90,242,0.06);">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;color:var(--purple);">📱 Journey 2 · Home Credit Indonesia</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;line-height:1.25;">"I need to upgrade my phone"</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px;">A Home Credit Indonesia employee wants a Samsung Galaxy A55</div>
+      </div>
+      <div style="padding:18px 22px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Benefits portal shows <strong style="color:var(--text);">Samsung A55 at 20% staff discount</strong> + instant 0% instalment — pre-approved via Home Credit payroll profile</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;"><strong style="color:var(--text);">No paperwork.</strong> Identity verified via NIK + employee ID already on file. Order confirmed in 3 taps</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Delivered in 2 business days. Instalments deducted from payroll over 12 months</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:8px;height:8px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Employee's <strong style="color:var(--text);">first Home Credit transaction</strong> — opens door to washing machine, AC unit, laptop offers next</div></div>
+      </div>
+      <div style="padding:14px 22px;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);">Home Credit Indonesia</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Revenue: consumer finance interest + origination fee · Samsung pays for exclusive staff pricing channel</div>
+      </div>
+    </div>
+
+    <!-- Journey 3 -->
+    <div style="background:var(--card);border:1px solid rgba(52,199,89,0.3);border-radius:20px;overflow:hidden;transition:transform 0.2s;" onmouseenter="this.style.transform='translateY(-4px)'" onmouseleave="this.style.transform=''">
+      <div style="padding:20px 22px 16px;border-bottom:1px solid var(--border);background:rgba(52,199,89,0.06);">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;color:var(--green);">🩺 Journey 3 · Zurich Indonesia</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;line-height:1.25;">"My family needs health cover"</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px;">An Adira Finance field agent worries about medical bills for their 2 children</div>
+      </div>
+      <div style="padding:18px 22px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Portal detects family size and salary band → recommends <strong style="color:var(--text);">Zurich Silver Family Plan</strong> at Rp 95K/month, salary-deducted</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Outpatient and hospitalisation covered. <strong style="color:var(--text);">Halodoc telemedicine</strong> included as a Zurich add-on at no extra cost</div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Claim filed via the portal app — photo of receipt, processed in 48 hours. <strong style="color:var(--text);">No hospital queue</strong></div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;"></div><div style="font-size:13px;color:var(--muted);line-height:1.5;">Employee now trusts the portal. Within 60 days they also open a <strong style="color:var(--text);">Danamon savings account</strong></div></div>
+      </div>
+      <div style="padding:14px 22px;background:rgba(255,255,255,0.02);border-top:1px solid var(--border);">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--green);">Zurich Indonesia + Bank Danamon</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Revenue: insurance premium + Danamon account activity · Halodoc pays for embedded telemedicine placement</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLYWHEEL -->
+<section>
+  <div class="section-label" style="color:var(--blue);">The Flywheel</div>
+  <div class="section-title">Why This <strong>Compounds</strong> Over Time</div>
+  <div class="section-sub">Each product adoption deepens MUFG's data advantage, enabling better offers, driving more adoption — and eventually building a case to license the model to Indonesia's largest non-MUFG employers.</div>
+  <div style="display:flex;gap:0;align-items:stretch;background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-top:8px;">
+    <div style="flex:1;padding:28px 24px;border-right:1px solid var(--border);position:relative;">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px;">01</div>
+      <div style="font-size:28px;margin-bottom:12px;">👥</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Captive Employee Base</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.55;">Danamon, Home Credit, Adira, Zurich employees — already employed by MUFG-affiliated entities. Lowest possible customer acquisition cost.</div>
+      <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);z-index:2;">→</div>
+    </div>
+    <div style="flex:1;padding:28px 24px;border-right:1px solid var(--border);position:relative;">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px;">02</div>
+      <div style="font-size:28px;margin-bottom:12px;">📲</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Financial Wellness Portal</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.55;">BPJS compliance as the trust anchor. Then: motorcycle deals (Adira), phone upgrades (Home Credit), health plans (Zurich), savings accounts (Danamon).</div>
+      <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);z-index:2;">→</div>
+    </div>
+    <div style="flex:1;padding:28px 24px;border-right:1px solid var(--border);position:relative;">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px;">03</div>
+      <div style="font-size:28px;margin-bottom:12px;">🏍️📱🩺</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Real Value, Real Adoption</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.55;">Employees act because the benefit is tangible — a cheaper bike, a discounted phone, a family health plan. 40% → 65%+ adoption. Product cross-sell follows naturally.</div>
+      <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);z-index:2;">→</div>
+    </div>
+    <div style="flex:1;padding:28px 24px;border-right:1px solid var(--border);position:relative;">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px;">04</div>
+      <div style="font-size:28px;margin-bottom:12px;">📊</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Data + Revenue Compound</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.55;">Payroll, spend, health, and loan repayment data accumulates. Better credit scoring. Better insurance pricing. Better personalisation. Corporate clients pay for access to this verified audience.</div>
+      <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);z-index:2;">→</div>
+    </div>
+    <div style="flex:1;padding:28px 24px;">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px;">05</div>
+      <div style="font-size:28px;margin-bottom:12px;">🏢</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">License to Indonesia</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.55;">Proven model, proven metrics. Offer the ecosystem to Indonesia's top 200 employers. They bring employees; MUFG entities serve them. Corporate clients follow the audience. $6B market opens up.</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVENUE TABLE -->
+<section style="padding-top:0;">
+  <div class="section-label" style="color:var(--green);">Revenue Model</div>
+  <div class="section-title">Who <strong>Earns What</strong> — and Why This Beats a Platform</div>
+  <div class="section-sub">A neutral marketplace earns 1–3% transaction fees. MUFG earns financing spreads, insurance premiums, and deposit margins — structurally higher-margin economics.</div>
+  <table style="width:100%;border-collapse:collapse;margin-top:12px;">
+    <thead>
+      <tr>
+        <th style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);">Entity</th>
+        <th style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);">What They Provide</th>
+        <th style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);">How They Earn</th>
+        <th style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.02);">Margin Profile</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:rgba(230,0,18,0.05);"><td style="padding:14px 16px;border-bottom:1px solid rgba(230,0,18,0.2);font-size:14px;font-weight:700;color:var(--red);">MUFG Bank Jakarta</td><td style="padding:14px 16px;border-bottom:1px solid rgba(230,0,18,0.2);font-size:14px;color:var(--muted);">Ecosystem orchestration, GCMS treasury, cross-border MNC coverage</td><td style="padding:14px 16px;border-bottom:1px solid rgba(230,0,18,0.2);font-size:14px;color:var(--muted);">Platform licensing fees (external employers) + treasury + FX</td><td style="padding:14px 16px;border-bottom:1px solid rgba(230,0,18,0.2);font-size:14px;font-weight:700;color:var(--blue);">Licensing SaaS model at scale</td></tr>
+      <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--blue);">Bank Danamon</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Salary accounts, personal loans, auto-debit repayment infrastructure</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Net interest margin on loans; account fees; FX spreads</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--green);">High — lending spread 8–15%</td></tr>
+      <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--orange);">Adira Finance</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Motorcycle &amp; auto financing via payroll-linked approval</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Financing interest (12–24% p.a.) + origination fees + insurance add-ons</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--green);">High — consumer finance spread</td></tr>
+      <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--purple);">Home Credit Indonesia</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Consumer electronics &amp; appliance BNPL — phone, washing machine, AC</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Instalment interest + merchant discount rate from Samsung, LG, etc.</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--green);">High — BNPL interest + MDR</td></tr>
+      <tr><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--green);">Zurich Indonesia</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Health, life &amp; accident insurance — individual and family plans</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted);">Insurance premium minus claims and operating costs (underwriting profit)</td><td style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;color:var(--orange);">Medium-High — depends on loss ratio</td></tr>
+      <tr><td style="padding:14px 16px;font-size:14px;font-weight:700;color:var(--muted);">Corporate Clients<br><small>(Samsung, Honda, LG…)</small></td><td style="padding:14px 16px;font-size:14px;color:var(--muted);">Exclusive product deals for verified salaried employees</td><td style="padding:14px 16px;font-size:14px;color:var(--muted);">Pay placement / distribution fees to reach MUFG's captive audience</td><td style="padding:14px 16px;font-size:14px;font-weight:700;color:var(--orange);">Revenue IN — not out. Win-win.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:40px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);">
+  MUFG Indonesia Financial Wellness Ecosystem · Prepared April 2026 ·
+  Based on MUFG Group disclosures, Ken Research Indonesia HR Tech Report, CIPD Asia 2024, Roland Berger Indonesia market data
+</footer>
+
+<script>
+(function () {
+  // ── Inner ring config (5 nodes, 72° apart, start at top = -90°)
+  const innerNodes = [
+    { id: 'node-danamon', angleDeg: -90,        color: 'rgba(94,158,255,0.5)' },
+    { id: 'node-adira',   angleDeg: -90 + 72,   color: 'rgba(218,119,86,0.5)' },
+    { id: 'node-hci',     angleDeg: -90 + 144,  color: 'rgba(191,90,242,0.5)' },
+    { id: 'node-zurich',  angleDeg: -90 + 216,  color: 'rgba(52,199,89,0.5)'  },
+    { id: 'node-mufg',    angleDeg: -90 + 288,  color: 'rgba(230,0,18,0.55)'  },
+  ];
+
+  // ── Outer ring config (4 corp nodes) — placed adjacent to connected inner
+  // Honda → Adira (-18°), Samsung → HCI (54°), LG → HCI offset, Halodoc → Zurich (126°)
+  const outerNodes = [
+    { id: 'corp-honda',   angleDeg: -42,   connectTo: 'node-adira',  color: 'rgba(218,119,86,0.3)' },
+    { id: 'corp-samsung', angleDeg:  30,   connectTo: 'node-hci',    color: 'rgba(191,90,242,0.3)' },
+    { id: 'corp-lg',      angleDeg:  82,   connectTo: 'node-hci',    color: 'rgba(191,90,242,0.25)' },
+    { id: 'corp-halodoc', angleDeg: 148,   connectTo: 'node-zurich', color: 'rgba(52,199,89,0.3)'  },
+  ];
+
+  function toRad(d) { return d * Math.PI / 180; }
+
+  function layout() {
+    const wrap = document.getElementById('eco-wrap');
+    const W = wrap.offsetWidth;
+    const H = wrap.offsetHeight;
+    const cx = W / 2;
+    const cy = H / 2;
+
+    const innerR = Math.min(W, H) * 0.265;
+    const outerR = Math.min(W, H) * 0.435;
+
+    // Position hub
+    const hub = document.getElementById('eco-hub');
+    hub.style.left = cx + 'px';
+    hub.style.top = cy + 'px';
+
+    // Position inner nodes
+    innerNodes.forEach(n => {
+      const el = document.getElementById(n.id);
+      const x = cx + innerR * Math.cos(toRad(n.angleDeg));
+      const y = cy + innerR * Math.sin(toRad(n.angleDeg));
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+    });
+
+    // Position outer nodes
+    outerNodes.forEach(n => {
+      const el = document.getElementById(n.id);
+      const x = cx + outerR * Math.cos(toRad(n.angleDeg));
+      const y = cy + outerR * Math.sin(toRad(n.angleDeg));
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+    });
+
+    // Draw decorative rings on bg SVG
+    drawRings(W, H, cx, cy, innerR, outerR);
+
+    // Draw connection lines after a tiny delay so transform:translate(-50%,-50%) has applied
+    requestAnimationFrame(() => drawLines(wrap, cx, cy));
+  }
+
+  function getCenter(wrap, id) {
+    const wRect = wrap.getBoundingClientRect();
+    const el = document.getElementById(id);
+    const r = el.getBoundingClientRect();
+    return {
+      x: r.left - wRect.left + r.width / 2,
+      y: r.top  - wRect.top  + r.height / 2
+    };
+  }
+
+  function makeLine(svg, x1, y1, x2, y2, stroke, width, dash) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('stroke', stroke);
+    line.setAttribute('stroke-width', width || 1.5);
+    if (dash) line.setAttribute('stroke-dasharray', dash);
+    svg.appendChild(line);
+  }
+
+  function drawLines(wrap, cx, cy) {
+    const svg = document.getElementById('eco-lines');
+    svg.innerHTML = '';
+
+    const hub = getCenter(wrap, 'eco-hub');
+
+    // Hub → inner nodes
+    innerNodes.forEach(n => {
+      const nc = getCenter(wrap, n.id);
+      makeLine(svg, hub.x, hub.y, nc.x, nc.y, n.color, 1.5, '7,5');
+    });
+
+    // Inner node → outer corp nodes
+    outerNodes.forEach(n => {
+      const nc = getCenter(wrap, n.id);
+      const ic = getCenter(wrap, n.connectTo);
+      makeLine(svg, ic.x, ic.y, nc.x, nc.y, n.color, 1, '4,4');
+    });
+  }
+
+  function drawRings(W, H, cx, cy, innerR, outerR) {
+    const svg = document.getElementById('eco-bg');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
+
+    svg.innerHTML = `
+      <circle cx="${cx}" cy="${cy}" r="${innerR}" fill="none"
+        stroke="rgba(255,255,255,0.04)" stroke-width="1" stroke-dasharray="4,5"/>
+      <circle cx="${cx}" cy="${cy}" r="${outerR}" fill="none"
+        stroke="rgba(255,255,255,0.03)" stroke-width="1" stroke-dasharray="3,7"/>
+    `;
+  }
+
+  // Run on load and resize
+  window.addEventListener('load', layout);
+  window.addEventListener('resize', layout);
+})();
+</script>
+</body>
+</html>

@@ -8,13 +8,15 @@ import { initOffers, openAddOfferPanel } from './admin/offers.js'
 import { initProviders }                 from './admin/providers.js'
 import { initEmployees }                 from './admin/employees.js'
 import { initAnalytics }                 from './admin/analytics.js'
+import { initDaily }                     from './admin/daily.js'
 
 // ─── Tab config ───────────────────────────────
 const TABS = [
-  { id: 'offers',    icon: '🏷️',  label: 'Penawaran',  init: initOffers },
-  { id: 'providers', icon: '🏦',  label: 'Provider',   init: initProviders },
-  { id: 'employees', icon: '👥',  label: 'Karyawan',   init: initEmployees },
-  { id: 'analytics', icon: '📊',  label: 'Analitik',   init: initAnalytics },
+  { id: 'offers',    icon: '🏷️',  label: 'Penawaran',     init: initOffers },
+  { id: 'providers', icon: '🏦',  label: 'Provider',       init: initProviders },
+  { id: 'employees', icon: '👥',  label: 'Karyawan',       init: initEmployees },
+  { id: 'analytics', icon: '📊',  label: 'Analitik',       init: initAnalytics },
+  { id: 'daily',     icon: '🎡',  label: 'Daily Prizes',   init: initDaily },
 ]
 
 let _activeTab = 'offers'

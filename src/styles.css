@@ -266,6 +266,12 @@ body {
 
 .btn-primary:not(:disabled):active { opacity: 0.85; }
 
+/* Allow <a> tags styled as .btn-primary */
+a.btn-primary, a.sim-cta-link {
+  text-decoration: none;
+  display: flex;
+}
+
 .btn-spinner {
   width: 16px;
   height: 16px;

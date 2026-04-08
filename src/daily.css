@@ -1,0 +1,493 @@
+/* ============================================================
+   daily.css — Spin & Save Daily Offer styles
+   ============================================================ */
+
+/* ── Loading state ─────────────────────────────────────────── */
+.daily-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.daily-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--card-border);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: daily-spin-anim 0.8s linear infinite;
+}
+
+@keyframes daily-spin-anim {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Screen & Header ───────────────────────────────────────── */
+#screen-daily {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+#screen-daily.active {
+  display: flex;
+}
+
+.daily-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid var(--card-border);
+  background: var(--card-bg);
+  flex-shrink: 0;
+}
+
+.daily-header-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  flex: 1;
+}
+
+.daily-demo-badge {
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--red);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ── Wheel wrapper ─────────────────────────────────────────── */
+.daily-wheel-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 14px 8px;
+}
+
+.daily-pointer {
+  font-size: 28px;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: -8px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.daily-wheel-container {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: visible;
+  position: relative;
+}
+
+.daily-wheel-container svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.18));
+}
+
+/* ── Spin CTA ─────────────────────────────────────────────── */
+.daily-cta-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 14px 4px;
+}
+
+.daily-spin-btn {
+  width: 100%;
+  max-width: 280px;
+  padding: 14px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 rgba(230, 0, 18, 0.4);
+  animation: spin-btn-pulse 2s ease-in-out infinite;
+  transition: transform 0.1s;
+}
+
+.daily-spin-btn:active { transform: scale(0.97); }
+.daily-spin-btn:disabled { opacity: 0.6; animation: none; cursor: default; }
+
+@keyframes spin-btn-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(230, 0, 18, 0.4); }
+  60%  { box-shadow: 0 0 0 12px rgba(230, 0, 18, 0); }
+  100% { box-shadow: 0 0 0 0   rgba(230, 0, 18, 0); }
+}
+
+.daily-spin-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ── Result Card ──────────────────────────────────────────── */
+.daily-result-card {
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-card);
+  margin: 12px 14px 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: result-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes result-pop {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.daily-result-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.daily-result-prize-emoji {
+  font-size: 44px;
+  line-height: 1.1;
+}
+
+.daily-result-prize-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+}
+
+.daily-result-prize-partner {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.daily-result-desc {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.daily-voucher-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--blue-dim);
+  border: 1px solid var(--blue-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.daily-voucher-code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 1px;
+}
+
+.daily-copy-btn {
+  background: none;
+  border: none;
+  color: var(--blue);
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.daily-expiry {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.daily-use-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: var(--red);
+  color: #fff;
+  text-align: center;
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  margin-top: 6px;
+}
+
+.daily-use-btn-internal {
+  background: var(--blue-dim);
+  color: var(--blue);
+  font-size: 11px;
+  border: 1px solid var(--blue-border);
+}
+
+/* ── Streak Bar ───────────────────────────────────────────── */
+.daily-streak-bar {
+  margin: 8px 14px 0;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  padding: 12px 14px;
+}
+
+.daily-streak-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.streak-pips {
+  display: flex;
+  gap: 6px;
+}
+
+.streak-pip {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--card-border);
+  transition: background 0.3s;
+}
+
+.streak-pip.filled {
+  background: var(--red);
+}
+
+.streak-hint {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.streak-bonus-msg {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* ── Prize legend ─────────────────────────────────────────── */
+.daily-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 14px 16px;
+}
+
+.daily-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--text);
+}
+
+.daily-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.daily-legend-label {
+  white-space: nowrap;
+}
+
+/* ── Beranda Banner Card ──────────────────────────────────── */
+.daily-banner-card {
+  margin: 0 14px 12px;
+  background: linear-gradient(135deg, var(--red) 0%, #b8000f 100%);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.daily-banner-card::before {
+  content: '';
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+
+.daily-banner-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.daily-banner-text {
+  flex: 1;
+}
+
+.daily-banner-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.daily-banner-sub {
+  font-size: 10px;
+  opacity: 0.88;
+  margin-bottom: 8px;
+}
+
+.daily-banner-btn {
+  display: inline-block;
+  background: #fff;
+  color: var(--red);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  animation: banner-btn-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes banner-btn-glow {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  50%       { box-shadow: 0 2px 16px rgba(255,255,255,0.5); }
+}
+
+.daily-banner-streak {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.9;
+  margin-top: 4px;
+}
+
+/* Already-spun state */
+.daily-banner-card.already-spun {
+  background: linear-gradient(135deg, #2d8c4e 0%, #1a6335 100%);
+}
+
+.daily-banner-card.already-spun .daily-banner-btn {
+  color: #1a6335;
+}
+
+/* ── Aktif tab — Voucher Wallet ───────────────────────────── */
+.voucher-wallet-header {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 16px 14px 4px;
+}
+
+.voucher-item {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  margin: 6px 14px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+.voucher-item-emoji {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.voucher-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.voucher-item-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voucher-item-partner {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.voucher-item-code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 10px;
+  color: var(--blue);
+  margin-top: 3px;
+}
+
+.voucher-status-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.voucher-status-active   { background: rgba(40,167,69,0.12); color: var(--green); }
+.voucher-status-used     { background: rgba(110,110,115,0.12); color: var(--muted); }
+.voucher-status-expired  { background: rgba(214,48,49,0.1); color: var(--error); }
+
+/* ── Confetti ─────────────────────────────────────────────── */
+.confetti-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.confetti-dot {
+  position: absolute;
+  top: -10px;
+  animation: confetti-fall linear forwards;
+}
+
+@keyframes confetti-fall {
+  0%   { transform: translateY(0)    rotate(0deg);   opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
+}

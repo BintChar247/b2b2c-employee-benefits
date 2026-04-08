@@ -4,6 +4,7 @@
  */
 
 import { supabase, state, navigate, esc, toggleTheme, getTheme } from './app.js'
+import { getDailySpinState } from './daily.js'
 
 // ============================================================
 // Demo offers — used when Supabase is not configured
@@ -248,6 +249,11 @@ export function renderBeranda(el) {
     </div>
 
     <div class="scroll-area pb-nav" id="beranda-scroll">
+      <!-- Daily Spin Banner -->
+      <div id="daily-spin-banner">
+        ${renderDailyBannerPlaceholder()}
+      </div>
+
       <!-- Section: Pilihan untukmu -->
       ${featuredOffers.length > 0 ? `
         <div class="section-header">
@@ -279,6 +285,51 @@ export function renderBeranda(el) {
   if (!state.offersLoaded) {
     loadOffers().then(() => renderBeranda(el))
   }
+}
+
+// ============================================================
+// Daily Spin Banner
+// ============================================================
+function renderDailyBannerPlaceholder() {
+  return `
+    <div class="daily-banner-card" id="daily-banner-inner" data-action="open-daily">
+      <div class="daily-banner-icon">🎡</div>
+      <div class="daily-banner-text">
+        <div class="daily-banner-title">Daily Spin</div>
+        <div class="daily-banner-sub">Putar roda &amp; menangkan hadiah hari ini</div>
+        <button class="daily-banner-btn">PUTAR SEKARANG →</button>
+      </div>
+    </div>
+  `
+}
+
+function renderDailyBannerLoaded(alreadySpun, streak) {
+  const streakN = streak?.current_streak || 0
+  if (alreadySpun) {
+    const prize = alreadySpun.daily_prizes || {}
+    return `
+      <div class="daily-banner-card already-spun" id="daily-banner-inner" data-action="open-daily">
+        <div class="daily-banner-icon">${prize.emoji || '🎁'}</div>
+        <div class="daily-banner-text">
+          <div class="daily-banner-title">Kamu sudah menang hari ini!</div>
+          <div class="daily-banner-sub">${esc(prize.label || 'Hadiah')} — ${esc(prize.partner_name || '')}</div>
+          <button class="daily-banner-btn">Lihat Hadiahmu →</button>
+          ${streakN > 0 ? `<div class="daily-banner-streak">🔥${streakN} hari berturut-turut</div>` : ''}
+        </div>
+      </div>
+    `
+  }
+  return `
+    <div class="daily-banner-card" id="daily-banner-inner" data-action="open-daily">
+      <div class="daily-banner-icon">🎡</div>
+      <div class="daily-banner-text">
+        <div class="daily-banner-title">Daily Spin</div>
+        <div class="daily-banner-sub">Putar roda &amp; menangkan hadiah hari ini</div>
+        <button class="daily-banner-btn">PUTAR SEKARANG →</button>
+        ${streakN > 0 ? `<div class="daily-banner-streak">🔥${streakN} hari berturut-turut</div>` : ''}
+      </div>
+    </div>
+  `
 }
 
 function renderMiniCard(offer) {
@@ -325,6 +376,11 @@ function attachBerandaListeners(el) {
 
   // Offer cards
   el.addEventListener('click', e => {
+    // Daily banner tap
+    if (e.target.closest('[data-action="open-daily"]')) {
+      navigate('daily')
+      return
+    }
     const card = e.target.closest('[data-offer-id]')
     if (!card) return
     const offerId = card.dataset.offerId
@@ -344,6 +400,14 @@ function attachBerandaListeners(el) {
     state.activeTab = 'produk'
     navigate('main', { tab: 'produk' })
   })
+
+  // Load real daily banner state asynchronously
+  const session = state.session || {}
+  const employeeCode = session.code || 'demo'
+  getDailySpinState(employeeCode).then(({ alreadySpun, streak }) => {
+    const bannerEl = el.querySelector('#daily-spin-banner')
+    if (bannerEl) bannerEl.innerHTML = renderDailyBannerLoaded(alreadySpun, streak)
+  }).catch(() => { /* keep placeholder */ })
 }
 
 // ============================================================

@@ -8,6 +8,8 @@ import { renderLogin, initAuth } from './auth.js'
 import { renderBeranda, renderProduk, loadOffers } from './offers.js'
 import { renderDetail } from './checkout.js'
 import { renderSimulator } from './simulator.js'
+import { renderDaily, loadMyVouchers } from './daily.js'
+import './daily.css'
 
 // ============================================================
 // Supabase client (singleton — shared across modules via state)
@@ -55,7 +57,7 @@ function themeIcon() {
 // ============================================================
 export const state = {
   session: null,          // { code, name, company }
-  screen: 'login',       // 'login' | 'main' | 'detail' | 'simulator'
+  screen: 'login',       // 'login' | 'main' | 'detail' | 'simulator' | 'daily'
   activeTab: 'beranda',  // 'beranda' | 'produk' | 'aktif' | 'profil'
   offers: [],
   providers: {},          // { id: providerObj }
@@ -151,6 +153,11 @@ function renderShell() {
     <div id="screen-simulator" class="screen">
       <!-- rendered by simulator.js -->
     </div>
+
+    <!-- DAILY SPIN SCREEN -->
+    <div id="screen-daily" class="screen">
+      <!-- rendered by daily.js -->
+    </div>
   `
 }
 
@@ -167,7 +174,7 @@ function render() {
   }
 
   // Show/hide top-level screens
-  const screens = ['login', 'main', 'detail', 'simulator']
+  const screens = ['login', 'main', 'detail', 'simulator', 'daily']
   for (const s of screens) {
     const el = document.getElementById(`screen-${s}`)
     if (el) el.classList.toggle('active', state.screen === s)
@@ -198,6 +205,13 @@ function render() {
   if (state.screen === 'simulator') {
     const el = document.getElementById('screen-simulator')
     renderSimulator(el, state.selectedOffer)
+    return
+  }
+
+  // ---- Daily Spin ----
+  if (state.screen === 'daily') {
+    const el = document.getElementById('screen-daily')
+    renderDaily(el)
     return
   }
 }
@@ -244,32 +258,82 @@ function attachNavListeners() {
 }
 
 // ============================================================
-// Aktif tab — Phase 2 placeholder
+// Aktif tab — Voucher Wallet
 // ============================================================
 function renderAktif(el) {
-  if (el._rendered) return
-  el._rendered = true
+  const session = state.session || {}
+  const employeeCode = session.code || 'demo'
+
   el.innerHTML = `
     <div class="status-bar">
       <span>9:41</span>
       <span class="status-icons">●●● ⚡</span>
     </div>
-    <div class="scroll-area">
-      <div class="empty-state" style="padding-top:60px;">
-        <div class="empty-state-icon">📋</div>
-        <div class="empty-state-title">Belum ada produk aktif</div>
-        <div class="empty-state-sub">Setelah kamu mengajukan produk di platform provider, riwayat akan muncul di sini.</div>
-        <button class="btn-primary" style="width:auto;padding:12px 24px;margin-top:12px;" id="btn-to-produk">
-          Lihat Penawaran →
-        </button>
+    <div class="scroll-area pb-nav">
+      <div class="voucher-wallet-header">🎫 Voucher Saya</div>
+      <div id="voucher-list">
+        <div class="daily-loading" style="padding:40px 0;">
+          <div class="daily-spinner"></div>
+          <span>Memuat voucher…</span>
+        </div>
       </div>
     </div>
   `
-  el.querySelector('#btn-to-produk')?.addEventListener('click', () => {
-    state.activeTab = 'produk'
-    updateNavTabs()
-    renderActiveTab()
+
+  loadMyVouchers(employeeCode).then(vouchers => {
+    const list = el.querySelector('#voucher-list')
+    if (!list) return
+    if (!vouchers.length) {
+      list.innerHTML = `
+        <div class="empty-state" style="padding-top:40px;">
+          <div class="empty-state-icon">🎡</div>
+          <div class="empty-state-title">Belum ada voucher</div>
+          <div class="empty-state-sub">Putar roda setiap hari untuk mendapatkan voucher eksklusif.</div>
+          <button class="btn-primary" style="width:auto;padding:12px 24px;margin-top:12px;" id="btn-to-daily">
+            Putar Sekarang →
+          </button>
+        </div>
+      `
+      list.querySelector('#btn-to-daily')?.addEventListener('click', () => navigate('daily'))
+      return
+    }
+    list.innerHTML = vouchers.map(v => renderVoucherItem(v)).join('')
+    list.addEventListener('click', e => {
+      const item = e.target.closest('.voucher-item')
+      if (!item) return
+      navigate('daily')
+    })
+  }).catch(() => {
+    const list = el.querySelector('#voucher-list')
+    if (list) list.innerHTML = `<div class="error-state" style="margin:16px 14px;">Gagal memuat voucher</div>`
   })
+}
+
+function renderVoucherItem(spin) {
+  const prize = spin.daily_prizes || {}
+  const now = new Date()
+  const expiresAt = spin.expires_at ? new Date(spin.expires_at) : null
+  const isExpired = expiresAt && now > expiresAt
+  const isUsed = spin.is_used
+
+  let statusClass = 'voucher-status-active'
+  let statusText = 'Aktif'
+  if (isUsed) { statusClass = 'voucher-status-used'; statusText = 'Digunakan' }
+  else if (isExpired) { statusClass = 'voucher-status-expired'; statusText = 'Kedaluwarsa' }
+
+  const spinDate = spin.spun_at ? new Date(spin.spun_at).toLocaleDateString('id-ID', { day:'numeric', month:'short' }) : ''
+
+  return `
+    <div class="voucher-item">
+      <div class="voucher-item-emoji">${prize.emoji || '🎁'}</div>
+      <div class="voucher-item-info">
+        <div class="voucher-item-label">${esc(prize.label || 'Voucher')}</div>
+        <div class="voucher-item-partner">${esc(prize.partner_name || '')} · ${spinDate}</div>
+        <div class="voucher-item-code">${esc(spin.voucher_code || '')}</div>
+      </div>
+      <span class="voucher-status-badge ${statusClass}">${statusText}</span>
+    </div>
+  `
 }
 
 // ============================================================
@@ -414,6 +478,8 @@ window.addEventListener('popstate', (e) => {
     navigateTo('detail')
   } else if (s === 'simulator') {
     navigateTo('simulator')
+  } else if (s === 'daily') {
+    navigateTo('daily')
   } else {
     navigateTo('main', { tab: e.state?.tab || state.activeTab })
   }
